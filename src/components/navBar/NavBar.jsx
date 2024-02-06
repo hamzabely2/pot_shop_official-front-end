@@ -18,7 +18,7 @@ const navigationConnexion = [
 
 export default function NavBar({ scrollToContent, contact }) {
     const [isCartOpen, setIsCartOpen] = useState(false);
-    const [connected, setConnected] = useState(true);
+    const [connected, setConnected] = useState(false);
 
     const openCart = () => {
         setIsCartOpen(true);

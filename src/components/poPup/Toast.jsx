@@ -1,7 +1,7 @@
 import {toast} from "react-toastify";
 
 
-export const ToastError = (mess : string) =>{
+export const ToastError = (mess) =>{
     toast.error(mess, {
         position: "top-right",
         autoClose: 5000,
@@ -15,7 +15,7 @@ export const ToastError = (mess : string) =>{
 };
 
 
-export const ToastSuccess = (mess : string) =>{
+export const ToastSuccess = (mess ) =>{
     toast.success(mess, {
         position: "top-right",
         autoClose: 5000,
