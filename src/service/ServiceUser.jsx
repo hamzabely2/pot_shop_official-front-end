@@ -3,12 +3,12 @@ import ServiceGeneric from './ServiceGenerique';
 
 const ServiceItem = {
 
-  GetAllItem : async  () => {
-      return await ServiceGeneric.get("item");
+  GetAllUser : async  () => {
+    return await ServiceGeneric.get("user");
   },
 
-  GetItem : async (id) => {
-    return await ServiceGeneric.get(`item/${id}`);
+  GetUser: async (id) => {
+    return await ServiceGeneric.get(`user/${id}`);
   }
 
 };

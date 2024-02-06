@@ -1,44 +1,9 @@
-import React, { Fragment, useState } from 'react'
-import { Dialog, Menu, Transition } from '@headlessui/react'
-import {
-    Bars3Icon,
-    BellIcon,
-    CalendarIcon,
-    ChartPieIcon,
-    Cog6ToothIcon,
-    DocumentDuplicateIcon,
-    FolderIcon,
-    HomeIcon,
-    UsersIcon,
-    XMarkIcon,
-} from '@heroicons/react/24/outline'
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import {
-    BrowserRouter,
-    Route,
-    Routes,
-    Navigate, useLocation, Link,
-} from 'react-router-dom';
-import ItemAdmin from '../itemAdmin/ItemAdmin';
-import UserAdmin from '../userAdmin/UserAdmin';
-import CommandeAdmin from '../commandeAdmin/CommandeAdmin';
+import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
 
-const navigation = [
-    { name: 'Dashboard', to: '/itemAdmin', icon: HomeIcon, current: false },
-    { name: 'Produits', to: '/itemAdmin', icon: UsersIcon, current: false },
-    { name: 'User', to: '/admin/userAdmin', icon: FolderIcon, current: false },
-    { name: 'Commande', to: '/admin/commandeAdmin', icon: CalendarIcon, current: false },
-
-]
-
-const teams = [
-    { id: 1, name: 'Heroicons', to: '#', initial: 'H', current: false },
-    { id: 2, name: 'Tailwind Labs', to: '#', initial: 'T', current: false },
-    { id: 3, name: 'Workcation', to: '#', initial: 'W', current: false },
-]
-const userNavigation = [
-    { name: 'Your profile', to: '#' },
-    { name: 'Sign out', to: '#' },
+const stats = [
+    { name: 'Total Subscribers', stat: '71,897', previousStat: '70,946', change: '12%', changeType: 'increase' },
+    { name: 'Avg. Open Rate', stat: '58.16%', previousStat: '56.14%', change: '2.02%', changeType: 'increase' },
+    { name: 'Avg. Click Rate', stat: '24.57%', previousStat: '28.62%', change: '4.05%', changeType: 'decrease' },
 ]
 
 function classNames(...classes) {
@@ -46,16 +11,44 @@ function classNames(...classes) {
 }
 
 export default function HomeAdmin() {
-    const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [currentNavItem, setCurrentNavItem] = useState(navigation[0]); // Set initial selected navigation item
-
-
     return (
-        <>
-            <div>
-<p>dd</p>
-            </div>
-        </>
+        <div>
+            <h3 className="text-base font-semibold leading-6 text-gray-900">Last 30 days</h3>
+            <dl className="mt-5 grid grid-cols-1 divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:grid-cols-3 md:divide-x md:divide-y-0">
+                {stats.map((item) => (
+                    <div key={item.name} className="px-4 py-5 sm:p-6">
+                        <dt className="text-base font-normal text-gray-900">{item.name}</dt>
+                        <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
+                            <div className="flex items-baseline text-2xl font-semibold text-indigo-600">
+                                {item.stat}
+                                <span className="ml-2 text-sm font-medium text-gray-500">from {item.previousStat}</span>
+                            </div>
 
+                            <div
+                                className={classNames(
+                                    item.changeType === 'increase' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800',
+                                    'inline-flex items-baseline rounded-full px-2.5 py-0.5 text-sm font-medium md:mt-2 lg:mt-0'
+                                )}
+                            >
+                                {item.changeType === 'increase' ? (
+                                    <ArrowUpIcon
+                                        className="-ml-1 mr-0.5 h-5 w-5 flex-shrink-0 self-center text-green-500"
+                                        aria-hidden="true"
+                                    />
+                                ) : (
+                                    <ArrowDownIcon
+                                        className="-ml-1 mr-0.5 h-5 w-5 flex-shrink-0 self-center text-red-500"
+                                        aria-hidden="true"
+                                    />
+                                )}
+
+                                <span className="sr-only"> {item.changeType === 'increase' ? 'Increased' : 'Decreased'} by </span>
+                                {item.change}
+                            </div>
+                        </dd>
+                    </div>
+                ))}
+            </dl>
+        </div>
     )
 }

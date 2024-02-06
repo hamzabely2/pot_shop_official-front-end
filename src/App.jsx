@@ -6,24 +6,18 @@ import {
     BrowserRouter,
     Route,
     Routes,
-    Navigate, useLocation,
+
 } from 'react-router-dom';
 import Register from "./connection/register/Register";
 import Nous from "./page/pagePublic/Nous/Nous.jsx";
-import Error404 from "./page/pagePublic/page404/Error404";
-import { ProtectedRoute } from "./route/Route";
 import Profile from "./page/pageUser/profile/Profile";
-import HomeAdmin from "./page/pageAdmin/HomeAdmin/HomeAdmin";
 import Contact from "./components/contact/Contact.jsx";
 import ItemDetails from "./page/pagePublic/itemdetails/ItemDetails";
 import Collection from "./page/pagePublic/collection/Collection";
 import Item from "./page/pagePublic/item/Item";
-import NavBar from './components/navBar/NavBar';
-import NavBarAdmin from './page/pageAdmin/navBarAdmin/NavBarAdmin';
 import NavBarChooser from './components/navBar/NavBarChooser';
-import ItemAdmin from './page/pageAdmin/itemAdmin/ItemAdmin';
-import UserAdmin from './page/pageAdmin/userAdmin/UserAdmin';
-import CommandeAdmin from './page/pageAdmin/commandeAdmin/CommandeAdmin';
+import Error404 from './page/pagePublic/page404/Error404';
+
 
 
 function App() {
@@ -43,9 +37,6 @@ function App() {
             <Route path="/public/itemDetails/:id" element={<ItemDetails />} />
             <Route path="/public/collection" element={<Collection />} />
             <Route path="/public/item" element={<Item />} />
-
-
-
           </Routes>
         </BrowserRouter>
     );
