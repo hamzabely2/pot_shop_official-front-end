@@ -1,23 +1,23 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {GetAllItem} from "../../../service/ServiceItem";
 import {Link} from "react-router-dom";
-import SkeletonItem from "../../../components/skeletons/SkeletonItem";
+import AlertApi from '../../../components/skeletons/AlertApi';
+import SkeletonItem from '../../../components/skeletons/SkeletonItem';
 
 
 const  ItemHome = () => {
-    const { data, loading, error } = GetAllItem();
 
-    if (loading) {
-        return <SkeletonItem/>;
+
+    let data = [""]
+
+    if (false) {
+        return <SkeletonItem/>
     }
 
-    if (error) {
+    if (false) {
         return (
             <div >
-                <div className="flex justify-center">
-                    <h1 className="text-xl text-white mt-2 bg-red-600 w-96 m-3 rounded-md">le serveur ne répond pas pour le moment, veuillez réessayer plus tard</h1>
-                </div>
-                    <SkeletonItem/>
+              <SkeletonItem/>
             </div>
       )
     }
