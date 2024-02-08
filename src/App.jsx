@@ -9,7 +9,6 @@ import {
 
 } from 'react-router-dom';
 import Register from "./connection/register/Register";
-import Nous from "./page/pagePublic/Nous/Nous.jsx";
 import Profile from "./page/pageUser/profile/Profile";
 import Contact from "./components/contact/Contact.jsx";
 import ItemDetails from "./page/pagePublic/itemdetails/ItemDetails";
@@ -29,7 +28,6 @@ function App() {
           <Routes>
             <Route path="/"  element={<Home />} />
             <Route path="/public/home"  element={<Home />} />
-            <Route path="/public/nous" element={<Nous/>} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login/>} />
             <Route path="/public/profile" element={<Profile />} />
