@@ -19,9 +19,7 @@ const Register= () => {
     const displayApiErrors = (errors) => {
         for (const key in errors ) {
             if (errors.hasOwnProperty(key)) {
-
                 let errorMessages;
-                // @ts-ignore
                 errorMessages = errors[key];
                 if (Array.isArray(errorMessages)) {
                     errorMessages.forEach((errorMessage) => {

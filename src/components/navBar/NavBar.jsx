@@ -1,8 +1,11 @@
-import React, { Fragment, useState } from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import Cart from '../../page/pageUser/cart/cart';
+import {getRoleFromToken} from '../../service/useAuth';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 const navigation = [
     { name: 'Home', to: 'public/home', current: false },
@@ -12,13 +15,30 @@ const navigation = [
 ];
 
 const navigationConnexion = [
-    { name: 'Login', to: 'login', current: false },
-    { name: 'Registration', to: 'register', current: false },
+    { name: 'Login', to: '/public/login', current: false },
+    { name: 'Registration', to: '/public/register', current: false },
 ];
 
-export default function NavBar({ scrollToContent, contact }) {
+export default function NavBar({ scrollToContent, contact ,connected}) {
     const [isCartOpen, setIsCartOpen] = useState(false);
-    const [connected, setConnected] = useState(false);
+    const [role, setRole] = useState(null);
+
+    useEffect(() => {
+        console.log(connected)
+        const token = cookies.get("token");
+        if (token) {
+            const userRole = getRoleFromToken();
+            if (connected) {
+                setRole(userRole);
+            }
+        }
+    }, [connected]);
+
+
+    const SignOut =()=> {
+        cookies.remove('token');
+        setRole(null);
+    }
 
     const openCart = () => {
         setIsCartOpen(true);
@@ -80,7 +100,7 @@ export default function NavBar({ scrollToContent, contact }) {
                             </div>
                             <div className="">
                                 <div className="">
-                                    {connected ? (
+                                    {!connected ? (
                                         <div>
                                             <div className="hidden sm:ml-6 sm:block m-3">
                                                 <div className="flex space-x-4">
@@ -154,14 +174,15 @@ export default function NavBar({ scrollToContent, contact }) {
                                                         </Menu.Item>
                                                         <Menu.Item>
                                                             {({ active }) => (
-                                                                <a
-                                                                    href="#"
+                                                                <button
+                                                                    onClick={SignOut}
                                                                     className={`${
                                                                         active ? 'bg-gray-100' : ''
                                                                     } block px-4 py-2 text-sm text-gray-700`}
+
                                                                 >
                                                                     Sign out
-                                                                </a>
+                                                                </button>
                                                             )}
                                                         </Menu.Item>
                                                     </Menu.Items>

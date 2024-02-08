@@ -14,10 +14,10 @@ import {
 import { GiPaintedPottery } from "react-icons/gi";
 import { GrDeliver } from "react-icons/gr";
 
-import HomeAdmin from '../HomeAdmin/HomeAdmin';
-import ItemAdmin from '../itemAdmin/ItemAdmin';
-import UserAdmin from '../userAdmin/UserAdmin';
-import CommandeAdmin from '../commandeAdmin/CommandeAdmin';
+import HomeAdmin from './HomeAdmin';
+import ItemAdmin from './itemAdmin/ItemAdmin';
+import UserAdmin from './userAdmin/UserAdmin';
+import CommandeAdmin from './CommandeAdmin';
 
 const navigation = [
   { name: 'Dashboard', to: '/admin/homeAdmin', icon: HomeIcon, current: false , component: HomeAdmin},
@@ -92,7 +92,7 @@ export default function NavBarAdmin() {
               <div className="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true" />
 
               <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-                <form className="relative flex flex-1" action="#" method="GET">
+                <form className="relative flex flex-1" action="navBarAdmin#" method="GET">
                   <label htmlFor="search-field" className="sr-only">
                     Search
                   </label>

@@ -6,7 +6,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {setCookie} from "../../service/useAuth";
 
 
-const Login = () => {
+const Login = ( ) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const navigate = useNavigate();
@@ -33,8 +33,9 @@ const Login = () => {
                     ToastSuccess(response.data.message);
                 }, 200)
                 let token =  response.data.result
-                setCookie("token", token,7);
-                navigate("public/home")
+                setCookie("token", token,2);
+               // <NavBar  scrollToContent={null} contact={null} connected={true}/>
+                navigate("/public/home")
             }
             if (response.response.status === 400) {
                 ToastError(response.response.data.message);

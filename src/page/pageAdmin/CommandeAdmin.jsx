@@ -1,5 +1,5 @@
-import {GetAllItem} from '../../../service/ServiceItem';
-import AlertApi from '../../../components/skeletons/AlertApi';
+import {GetAllItem} from '../../service/ServiceItem';
+import AlertApi from '../../components/skeletons/AlertApi';
 
 const people = [
   { name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
@@ -84,7 +84,7 @@ export default function CommandeAdmin() {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.UpdateDate}</td>
 
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                        <a href="commandeAdmin#" className="text-indigo-600 hover:text-indigo-900">
                           Edit<span className="sr-only">, {item.Name}</span>
                         </a>
                       </td>
