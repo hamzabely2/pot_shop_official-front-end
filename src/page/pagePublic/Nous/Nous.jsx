@@ -2,7 +2,6 @@ import React from 'react';
 import NavBar from '../../../components/navBar/NavBar';
 
 const Nous = () => {
-    const scrollToContent = null
 
     return (
         <div>
