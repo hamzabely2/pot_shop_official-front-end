@@ -1,21 +1,22 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { useLocation } from "react-router-dom";
 import NavBar from './NavBar';
-import NavBarAdmin from '../../page/pageAdmin/navBarAdmin/NavBarAdmin';
-import HomeAdmin from '../../page/pageAdmin/HomeAdmin/HomeAdmin';
+import NavBarAdmin from '../../page/pageAdmin/NavBarAdmin';
+import Cookies from 'universal-cookie';
+import {Roles} from '../../Route/UnProtectedRoutes';
+const cookies = new Cookies();
+function NavBarChooser({currentUserRole,handleSignOut }) {
 
-function NavBarChooser() {
+  useEffect(() => {}, [currentUserRole]);
   const location = useLocation();
-  let header
-if(location.pathname.split("/")[1] === "admin" ){
-header = <NavBarAdmin/>
-}else if(location.pathname.split("/")[1] === "public" ){
- header = <NavBar/>
-}else if (location.pathname.split("/")[1] === "public"){
-  header = <></>
-}
 
-  return header;
+  if(location.pathname === "/public/login" || location.pathname === "/public/register") {
+    return null;
+  }else if(currentUserRole === Roles.admin) {
+    return <NavBarAdmin currentUserRole={currentUserRole} handleSignOut={handleSignOut} />
+  }else if(currentUserRole === Roles.user || currentUserRole === Roles.visitor){
+    return <NavBar currentUserRole={currentUserRole} handleSignOut={handleSignOut} />
+  }
 }
 
 export default NavBarChooser;

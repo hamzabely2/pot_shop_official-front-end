@@ -58,13 +58,14 @@ const filters = [
 
 export default function Item() {
 
-  const scrollToContent = null
-
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
   return (
       <div className="bg-white">
         <div>
+          <div className="relative justify-center flex items-center">
+            <h1 className="text_nav  text-2xl leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">ليه بو ء</h1>
+          </div>
           <div className="relative justify-center flex items-center">
             <div className=""><img alt="image de decoration" className="w-40 mr-4" src="/img/decoration/decoration_right.jpg"></img></div>
             <h2 className="text_nav leading-7 text.black sm:truncate sm:text-3xl ">Produits</h2>
