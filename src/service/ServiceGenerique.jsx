@@ -9,6 +9,18 @@ const ServiceGeneric = {
     }
   },
 
+  getWithToken: async (url,token) => {
+    try {
+      return await axios.get(process.env.REACT_APP_URL + url ,{
+        headers : {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+    } catch (error) {
+      throw error.response || error.message;
+    }
+  },
+
   post: async (url, data) => {
     try {
       return await axios.post(url, data);

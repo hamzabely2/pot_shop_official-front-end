@@ -1,40 +1,20 @@
-import React from "react";
+import React, {useState} from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {admin_routes, auth_routes, user_routes} from './UnProtectedRoutes';
-import RedirectIfLoggedIn from './RedirectIfLoggedIn';
 import RequireAuth from './RequireAuth';
-import NavBar from '../components/navBar/NavBar';
+import NavBarChooser from '../components/navBar/NavBarChooser';
 
 const AppRoutes = () => {
-  const protectedRoutes = [
-    ...admin_routes,
-    ...user_routes,
-  ];
-
-  const unprotectedRoutes = [...auth_routes];
+  const protectedRoutes = [...admin_routes, ...user_routes, ...auth_routes];
+  const [currentUserRole, setCurrentUserRole] = useState(null);
+  const handleSignOut = () => {
+    setCurrentUserRole(undefined);
+  };
 
   return (
       <BrowserRouter>
-        <NavBar/>
+        <NavBarChooser currentUserRole={currentUserRole} handleSignOut={handleSignOut}/>
         <Routes>
-          {
-            unprotectedRoutes.map((e) => {
-              return (
-                  <Route
-                      key={e.path}
-                      exact
-                      path={e.path}
-                      element={
-                        <RedirectIfLoggedIn>
-                          {e.ele}
-                        </RedirectIfLoggedIn>
-                      }
-                      // element={e.ele}
-                  />
-              );
-            })
-          }
-
           {
             protectedRoutes.map((e) => {
               return (
@@ -43,11 +23,13 @@ const AppRoutes = () => {
                       exact
                       path={e.path}
                       element={
-                        <RequireAuth userroles={e?.availability}>
+                        <RequireAuth
+                            userroles={e?.availability}
+                            setCurrentUserRole={setCurrentUserRole}
+                        >
                           {e.ele}
                         </RequireAuth>
                       }
-                      // element={e.ele}
                   />
               );
             })

@@ -1,10 +1,8 @@
-import serviceItem, {GetAllItem} from '../../../service/ServiceItem';
 import AlertApi from '../../../components/skeletons/AlertApi';
 import {useEffect, useState} from 'react';
 import ServiceItem from '../../../service/ServiceItem';
 
 export default function ItemAdmin() {
-
   const [item, setItem] = useState([]);
   let [errorMessage , setErrorMessage] = useState(false);
 

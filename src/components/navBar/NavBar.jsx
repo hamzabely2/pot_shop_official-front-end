@@ -2,9 +2,9 @@ import React, {Fragment, useEffect, useState} from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import Cart from '../../page/pageUser/cart/cart';
-import {getRoleFromToken} from '../../service/useAuth';
 import Cookies from 'universal-cookie';
+import {Roles} from '../../Route/UnProtectedRoutes';
+import Cart from '../../page/pageUser/Cart';
 const cookies = new Cookies();
 
 const navigation = [
@@ -19,27 +19,17 @@ const navigationConnexion = [
     { name: 'Registration', to: '/public/register', current: false },
 ];
 
-export default function NavBar({ scrollToContent, contact ,connected}) {
+export default function NavBar({currentUserRole,handleSignOut}) {
     const [isCartOpen, setIsCartOpen] = useState(false);
-    const [role, setRole] = useState(null);
+    let [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        console.log(connected)
-        const token = cookies.get("token");
-        if (token) {
-            const userRole = getRoleFromToken();
-            if (connected) {
-                setRole(userRole);
-            }
-        }
-    }, [connected]);
-
-
+          currentUserRole === Roles.user ? setIsConnected(true) : setIsConnected(false);
+    }, [currentUserRole]);
     const SignOut =()=> {
-        cookies.remove('token');
-        setRole(null);
+        cookies.remove('token', { path: '/' });
+        handleSignOut();
     }
-
     const openCart = () => {
         setIsCartOpen(true);
     };
@@ -52,7 +42,7 @@ export default function NavBar({ scrollToContent, contact ,connected}) {
         <Disclosure as="nav" className="">
             {({ open }) => (
                 <>
-                    <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 ">
                         <div className="relative flex h-16 items-center justify-between">
                             <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-900 hover:bg-gray-700 focus:outline-none">
@@ -87,20 +77,12 @@ export default function NavBar({ scrollToContent, contact ,connected}) {
                                                 {item.name}
                                             </Link>
                                         ))}
-                                        {contact && (
-                                            <button
-                                                className="text-gray-900 rounded-md px-3 py-2 text-sm font-medium"
-                                                onClick={scrollToContent}
-                                            >
-                                                Contact
-                                            </button>
-                                        )}
                                     </div>
                                 </div>
                             </div>
                             <div className="">
                                 <div className="">
-                                    {!connected ? (
+                                    {!isConnected ? (
                                         <div>
                                             <div className="hidden sm:ml-6 sm:block m-3">
                                                 <div className="flex space-x-4">
@@ -156,7 +138,7 @@ export default function NavBar({ scrollToContent, contact ,connected}) {
                                                                         active ? 'bg-gray-100' : ''
                                                                     } block px-4 py-2 text-sm text-gray-700`}
                                                                 >
-                                                                    Profile
+                                                                    Profil
                                                                 </Link>
                                                             )}
                                                         </Menu.Item>
@@ -168,7 +150,7 @@ export default function NavBar({ scrollToContent, contact ,connected}) {
                                                                         active ? 'bg-gray-100' : ''
                                                                     } block px-4 py-2 text-sm text-gray-700`}
                                                                 >
-                                                                    Settings
+                                                                    Paramètres
                                                                 </Link>
                                                             )}
                                                         </Menu.Item>
@@ -178,10 +160,10 @@ export default function NavBar({ scrollToContent, contact ,connected}) {
                                                                     onClick={SignOut}
                                                                     className={`${
                                                                         active ? 'bg-gray-100' : ''
-                                                                    } block px-4 py-2 text-sm text-gray-700`}
+                                                                    } block px-4 py-2 text-sm text-red-700`}
 
                                                                 >
-                                                                    Sign out
+                                                                    Se déconnecter
                                                                 </button>
                                                             )}
                                                         </Menu.Item>

@@ -2,9 +2,6 @@ import React from "react";
 import './App.css';
 
 import AppRoutes from './Route/AppRoutes';
-
-
-
 function App() {
 
     return (
