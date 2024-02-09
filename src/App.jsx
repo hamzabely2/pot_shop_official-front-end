@@ -8,6 +8,7 @@ function App() {
         <React.Fragment>
           <AppRoutes></AppRoutes>
         </React.Fragment>
+
     );
 }
 
