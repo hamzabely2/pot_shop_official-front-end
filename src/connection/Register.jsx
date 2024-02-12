@@ -6,12 +6,10 @@ import { RegisterService} from "../service/ServiceConnection";
 import {ToastError, ToastSuccess} from "../components/poPup/Toast";
 import {Link, useNavigate} from 'react-router-dom';
 import {setCookie} from "../service/useAuth";
-import {FaArrowLeft} from 'react-icons/fa';
-import {GoArrowLeft} from 'react-icons/go';
 import {BsArrowLeft} from 'react-icons/bs';
 
 const Register= () => {
-    const [userName,setUserName] = useState("");
+    const [firstName,setFirstName] = useState("");
     const [lastName,setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -33,14 +31,14 @@ const Register= () => {
     const handleRegister = async (event ) =>{
         event.preventDefault();
         try {
-            const response = await RegisterService(   {userName, lastName, email, password});
+            const response = await RegisterService(   {firstName, lastName, email, password});
             if (response.status === 200){
                 setTimeout(() => {
                     ToastSuccess(response.data.message);
                 },200)
                 let token =  response.data.result
                 setCookie("token", token,7);
-                navigate(`public/home`,{replace: true});
+                navigate(`/public/home`,{replace: true});
             }
            if (response.response.status === 400){
                ToastError(response.response.data.message);
@@ -106,11 +104,11 @@ const Register= () => {
                                                         </label>
                                                         <div className="mt-2">
                                                             <input
-                                                                onChange={(e) => setUserName(e.target.value)}
-                                                                id="userName"
-                                                                name="userName"
-                                                                type="userName"
-                                                                autoComplete="userName"
+                                                                onChange={(e) => setFirstName(e.target.value)}
+                                                                id="firstName"
+                                                                name="firstName"
+                                                                type="firstName"
+                                                                autoComplete="firstName"
                                                                 placeholder="prenom"
                                                                 required
                                                                 className="block h-10 p-3  w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset  sm:text-sm sm:leading-6"

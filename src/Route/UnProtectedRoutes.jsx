@@ -6,6 +6,10 @@ import Register from '../connection/Register';
 import HomeAdmin from '../page/pageAdmin/HomeAdmin';
 import React from 'react';
 import Nous from '../page/pagePublic/Nous';
+import HomeProfile from '../page/pageUser/profile/HomeProfile';
+import AdressProfile from '../page/pageUser/profile/AdressProfile';
+import PasswordProfile from '../page/pageUser/profile/PasswordProfile';
+import CommandeProfile from '../page/pageUser/profile/CommandeProfile';
 
 export const Roles = {
   user: "User",
@@ -46,8 +50,8 @@ export const auth_routes = [
 export const admin_routes = [
   {
     path: "/admin/homeAdmin",
-    ele: <HomeAdmin/>,
-    availability:[Roles.admin]
+    ele: <HomeAdmin />,
+    availability:[Roles.admin,Roles.user]
   }
 ]
 export const user_routes = [
@@ -55,5 +59,26 @@ export const user_routes = [
     path: "/public/Collection",
     ele: <Collection/>,
     availability:[Roles.visitor, Roles.user, Roles.admin]
-  }
+  },
+
+  {
+    path: "/public/profile/adress",
+    ele: <AdressProfile/>,
+    availability:[Roles.visitor, Roles.user, Roles.admin]
+  },
+  {
+    path: "/public/profile/password",
+    ele: <PasswordProfile/>,
+    availability:[Roles.visitor, Roles.user, Roles.admin]
+  },
+  {
+    path: "/public/profile/home",
+    ele: <HomeProfile/>,
+    availability:[Roles.visitor, Roles.user, Roles.admin]
+  },
+  {
+    path: "/public/profile/commande",
+    ele: <CommandeProfile/>,
+    availability:[Roles.visitor, Roles.user, Roles.admin]
+  },
 ]

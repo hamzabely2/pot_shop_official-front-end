@@ -7,9 +7,11 @@ import NavBarChooser from '../components/navBar/NavBarChooser';
 const AppRoutes = () => {
   const protectedRoutes = [...admin_routes, ...user_routes, ...auth_routes];
   const [currentUserRole, setCurrentUserRole] = useState(null);
+
   const handleSignOut = () => {
     setCurrentUserRole(undefined);
   };
+
 
   return (
       <BrowserRouter>

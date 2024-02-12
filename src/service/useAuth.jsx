@@ -31,14 +31,23 @@ export const Token = () => {
 }
 
 export function getRoleFromToken() {
-    const token = cookies.get("token"); // Récupérer le token depuis les cookies
-    const tokenData = decodeToken(token); // Décoder le token
+    const token = cookies.get("token");
+    const tokenData = decodeToken(token);
 
     if (tokenData && tokenData.hasOwnProperty("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")) {
         return tokenData["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
     }
+    return null;
+}
 
-    return null; // Retourner null si le token ou le rôle n'est pas trouvé
+export function getNameFromToken() {
+    const token = cookies.get("token");
+    const tokenData = decodeToken(token);
+
+    if (tokenData && tokenData.hasOwnProperty("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")) {
+        return tokenData["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+    }
+    return null;
 }
 
 export const setCookie = (name, token, days) => {
