@@ -1,5 +1,5 @@
 import NavBar from '../../../../components/navBar/NavBar';
-import NavBarAdmin from '../../navBarAdmin/NavBarAdmin';
+import NavBarAdmin from '../../NavBarAdmin';
 
 export default function AddItemAdmin() {
   return (
