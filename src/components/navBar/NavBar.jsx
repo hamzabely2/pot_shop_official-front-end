@@ -133,7 +133,7 @@ export default function NavBar({currentUserRole,handleSignOut}) {
                                                         <Menu.Item>
                                                             {({ active }) => (
                                                                 <Link
-                                                                    to="profile"
+                                                                    to="/public/profile/home"
                                                                     className={`${
                                                                         active ? 'bg-gray-100' : ''
                                                                     } block px-4 py-2 text-sm text-gray-700`}

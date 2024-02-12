@@ -24,7 +24,6 @@ const navigation = [
   { name: 'Produits', to: '/admin/itemAdmin', icon: GiPaintedPottery , current: false , component: ItemAdmin},
   { name: 'User', to: '/admin/userAdmin', icon: UsersIcon, current: false ,component: UserAdmin},
   { name: 'Commande', to: '/admin/commandeAdmin', icon: GrDeliver , current: false, component: CommandeAdmin },
-
 ]
 
 const userNavigation = [
@@ -151,7 +150,6 @@ export default function NavBarAdmin() {
                 </div>
               </div>
             </div>
-
             <main className="py-10">
               <div className="px-4 sm:px-6 lg:px-8">
                 <Routes>
@@ -160,7 +158,6 @@ export default function NavBarAdmin() {
                           key={item.name}
                           path={item.to}
                           element={createElement(item.component)}
-
                       />
                   ))}
                 </Routes>

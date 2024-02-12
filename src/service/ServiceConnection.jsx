@@ -5,7 +5,7 @@ export const RegisterService = async(payload)  => {
     try {
         return await axios.post(`${process.env.REACT_APP_URL}${userString}/register`,{
             lastName : payload.lastName,
-            userName : payload.userName,
+            firstName : payload.firstName,
             email : payload.email,
             password : payload.password,
         })

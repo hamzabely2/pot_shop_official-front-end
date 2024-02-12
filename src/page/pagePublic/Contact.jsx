@@ -1,6 +1,6 @@
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/24/outline'
 
-export default function Example() {
+export default function Contact() {
   return (
       <div className="bg-white">
         <div className="mx-auto max-w-8xl px-6  py-16 lg:px-8">
@@ -22,7 +22,6 @@ export default function Example() {
                   Your browser does not support the video tag.
                 </video>
               </div>
-
             </div>
             <div className="mt-12 sm:mt-16 md:mt-0">
               <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl sm:tracking-tight">Technical Support</h2>

@@ -1,11 +1,11 @@
 import { Navigate } from "react-router-dom"
 import { useLocation } from "react-router-dom";
-import {getRoleFromToken, Token} from '../service/useAuth';
+import {getRoleFromToken} from '../service/useAuth';
 import Cookies from 'universal-cookie';
 import {Roles} from './UnProtectedRoutes';
 const cookies = new Cookies();
 
-const RequireAuth = ({ children, userroles,setCurrentUserRole  }) => {
+const RequireAuth = ({ children, userroles,setCurrentUserRole }) => {
   const location = useLocation();
   let currentUserRole;
 
@@ -14,7 +14,8 @@ const RequireAuth = ({ children, userroles,setCurrentUserRole  }) => {
   }else {
     currentUserRole = Roles.visitor;
   }
-    setCurrentUserRole(currentUserRole);
+   setCurrentUserRole(currentUserRole);
+
 
   if (currentUserRole) {
     if (userroles) {
