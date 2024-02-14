@@ -1,7 +1,7 @@
 import React, { useState} from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import  "../page/pagePublic/pagepublic.css";
+import  "../page/pagePublic/pagePublic.css";
 import { RegisterService} from "../service/ServiceConnection";
 import {ToastError, ToastSuccess} from "../components/poPup/Toast";
 import {Link, useNavigate} from 'react-router-dom';
@@ -33,14 +33,12 @@ const Register= () => {
         try {
             const response = await RegisterService(   {firstName, lastName, email, password});
             if (response.status === 200){
-                setTimeout(() => {
+
                     ToastSuccess(response.data.message);
-                },200)
                 let token =  response.data.result
                 setCookie("token", token,7);
                 navigate(`/public/home`,{replace: true});
-            }
-           if (response.response.status === 400){
+            }else if (response.response.status === 400){
                ToastError(response.response.data.message);
                displayApiErrors(response.response.data.errors);
            }
@@ -56,23 +54,8 @@ const Register= () => {
     <div>
         <div>
             <div  className="flex">
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="colored"
-                />
-
                 <div className="flex bg-image h-screen w-screen items-center justify-center backdrop-blur-xl  bg-cover bg-no-repeat"
                      style={backgroundStyle}>
-
-
                     <div className="rounded-xl bg-gray-800 bg-white  w-[400px] flex justify-center mt-10 border-5 border-amber-gray-900  drop-shadow-xl backdrop-blur-md max-sm:px-8">
                             <div className="flex flex-1 flex-col justify-center space-y-5 max-w-md">
 

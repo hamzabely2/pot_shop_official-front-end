@@ -53,13 +53,14 @@ export default function HomeProfile() {
   }, [])
 
 
+
   const backgroundStyle = {
-    backgroundImage: `url(https://images.pexels.com/photos/7718448/pexels-photo-7718448.jpeg?auto=compress&cs=tinysrgb&w=1600)`,
+    backgroundImage: "url(/img/imgHome.jpg)" ,
+    backgroundSize: "100%",
     borderRadius: "20px"
   };
+
   const [sidebarOpen ,setSidebarOpen] = useState(false)
-
-
   return (
       <div>
         <Disclosure as="div" className="relative overflow-hidden mt-5 p-5">

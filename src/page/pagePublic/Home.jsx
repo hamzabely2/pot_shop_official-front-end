@@ -1,16 +1,18 @@
 import React from 'react';
-import  "./pagepublic.css";
+import  "./pagePublic.css";
 import StrongPoint from "./StrongPoint";
 import Item from "./item/ItemHome.jsx";
 import {ToastContainer} from "react-toastify";
 import Header from "../../components/header/Header";
 import Contact from "./Contact.jsx";
+import {Link} from 'react-router-dom';
 
 const Home = () => {
     const contentRef = React.useRef(null);
 
     const backgroundStyle = {
-        backgroundImage: `url(https://images.pexels.com/photos/7718448/pexels-photo-7718448.jpeg?auto=compress&cs=tinysrgb&w=1600)`,
+        backgroundImage: "url(/img/imgHome.jpg)" ,
+        backgroundSize: "100%",
         borderRadius: "20px"
     };
     return (
@@ -39,12 +41,11 @@ const Home = () => {
                                             idéal maintenant !
                                         </h2>
                                         <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
-                                            <a
-                                                href="home#"
+                                            <Link to="/public/creation"
                                                 className="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white m-5"
                                             >
                                                 Commencer
-                                            </a>
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
@@ -54,9 +55,8 @@ const Home = () => {
                  <StrongPoint/>
                 <Item/>
                     <div ref={contentRef} >
-                    <Contact />
+                    <Contact/>
                     </div>
-               <Header/>
             </div>
         </div>
     );

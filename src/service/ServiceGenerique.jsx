@@ -28,6 +28,40 @@ const ServiceGeneric = {
       throw error.response || error.message;
     }
   },
+
+  postWithToken: async (url,token,data) => {
+    try {
+      return await axios.post(process.env.REACT_APP_URL + url , data,{
+        headers : {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+    } catch (error) {
+      throw error.response || error.message;
+    }
+  },
+  delete: async (url,token,data) => {
+    try {
+      return await axios.post(process.env.REACT_APP_URL + url , data,{
+        headers : {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+    } catch (error) {
+      throw error.response || error.message;
+    }
+  },
+  deleteWithToken: async (url,token,data) => {
+    try {
+      return await axios.delete(process.env.REACT_APP_URL + url ,{
+        headers : {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+    } catch (error) {
+      throw error.response || error.message;
+    }
+  },
 };
 
 export default ServiceGeneric;

@@ -28,16 +28,14 @@ const Login = ( ) => {
 
         try {
             const response = await LoginService({email, password});
+
+            console.log(response)
             if (response.status === 200) {
-                setTimeout(() => {
-                    ToastSuccess(response.data.message);
-                }, 200)
+                ToastSuccess(response.data.message);
                 let token =  response.data.result
                 setCookie("token", token,2);
-               // <NavBar  scrollToContent={null} contact={null} connected={true}/>
                 navigate("/public/home")
-            }
-            if (response.response.status === 400) {
+            }else if (response.response.status === 400) {
                 ToastError(response.response.data.message);
                 displayApiErrors(response.response.data.errors);
             }
@@ -55,19 +53,6 @@ const Login = ( ) => {
         <div>
             <div className="flex">
                 <div className="flex flex-row w-full">
-                    <ToastContainer
-                        position="top-right"
-                        autoClose={5000}
-                        hideProgressBar={false}
-                        newestOnTop={false}
-                        closeOnClick
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
-                        theme="colored"
-                    />
-
                     <div className="flex bg-image h-screen w-screen items-center justify-center backdrop-blur-xl  bg-cover bg-no-repeat"
                          style={backgroundStyle}>
                         <div className="rounded-xl bg-gray-800 bg-white  w-[400px] flex justify-center mt-10 border-5 border-amber-gray-900  drop-shadow-xl backdrop-blur-md max-sm:px-8">

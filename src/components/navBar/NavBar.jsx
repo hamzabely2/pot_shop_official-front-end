@@ -11,7 +11,7 @@ const navigation = [
     { name: 'Home', to: 'public/home', current: false },
     { name: 'Collections', to: 'public/collection', current: false },
     { name: 'Plus sur les pots', to: 'public/nous', current: false },
-    { name: 'Produits', to: 'public/item', current: false },
+    { name: 'Articles', to: 'public/item', current: false },
 ];
 
 const navigationConnexion = [
@@ -19,7 +19,7 @@ const navigationConnexion = [
     { name: 'Registration', to: '/public/register', current: false },
 ];
 
-export default function NavBar({currentUserRole,handleSignOut}) {
+export default function NavBar({currentUserRole,handleSignOut, token}) {
     const [isCartOpen, setIsCartOpen] = useState(false);
     let [isConnected, setIsConnected] = useState(false);
 
@@ -107,6 +107,7 @@ export default function NavBar({currentUserRole,handleSignOut}) {
                                                 isOpen={isCartOpen}
                                                 openModal={openCart}
                                                 closeModal={closeCart}
+                                                token={token}
                                             />
                                             <Menu as="div" className="relative ml-3">
                                                 <div>
