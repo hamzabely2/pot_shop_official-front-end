@@ -267,8 +267,7 @@ export default function ItemDetails() {
                 </h2>
 
                 <div className="divide-y divide-gray-200 border-t">
-                  {product.details.map((detail,index) => (
-                      <Disclosure as="div" key={index}>
+                      <Disclosure as="div" >
                         {({ open }) => (
                             <>
                               <h3>
@@ -276,7 +275,7 @@ export default function ItemDetails() {
                             <span
                                 className={classNames(open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium')}
                             >
-                              {detail.name}
+                              {item.categories.label}
                             </span>
                                   <span className="ml-6 flex items-center">
                               {open ? (
@@ -295,15 +294,47 @@ export default function ItemDetails() {
                               </h3>
                               <Disclosure.Panel as="div" className="prose prose-sm pb-6">
                                 <ul role="list">
-                                  {detail.items.map((item, itemIndex) => (
-                                      <li key={itemIndex}>{item}</li>
-                                  ))}
+                                      <li >{item.categories.description}</li>
                                 </ul>
                               </Disclosure.Panel>
                             </>
                         )}
                       </Disclosure>
-                  ))}
+
+                  <Disclosure as="div" >
+                    {({ open }) => (
+                        <>
+                          <h3>
+                            <Disclosure.Button className="group relative flex w-full items-center justify-between py-6 text-left">
+                            <span
+                                className={classNames(open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium')}
+                            >
+                              {item.materials.label}
+                            </span>
+                              <span className="ml-6 flex items-center">
+                              {open ? (
+                                  <MinusIcon
+                                      className="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500"
+                                      aria-hidden="true"
+                                  />
+                              ) : (
+                                  <PlusIcon
+                                      className="block h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                                      aria-hidden="true"
+                                  />
+                              )}
+                            </span>
+                            </Disclosure.Button>
+                          </h3>
+                          <Disclosure.Panel as="div" className="prose prose-sm pb-6">
+                            <ul role="list">
+                              <li >{item.materials.description}</li>
+                            </ul>
+                          </Disclosure.Panel>
+                        </>
+                    )}
+                  </Disclosure>
+
                 </div>
               </section>
             </div>

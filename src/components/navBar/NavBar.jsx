@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import {Roles} from '../../Route/UnProtectedRoutes';
 import Cart from '../../page/pageUser/Cart';
+import NavBarAdmin from '../../page/pageAdmin/NavBarAdmin';
 const cookies = new Cookies();
 
 const navigation = [
@@ -39,6 +40,7 @@ export default function NavBar({currentUserRole,handleSignOut, token}) {
     };
 
     return (
+        currentUserRole === Roles.user || currentUserRole === Roles.visitor  ?
         <Disclosure as="nav" className="">
             {({ open }) => (
                 <>
@@ -196,6 +198,7 @@ export default function NavBar({currentUserRole,handleSignOut, token}) {
                     </div>
                     </>
                     )}
-        </Disclosure>
+        </Disclosure> :
+            <NavBarAdmin/>
     );
 }

@@ -3,13 +3,44 @@ import { Dialog, Transition } from '@headlessui/react';
 import { LuShoppingCart } from 'react-icons/lu';
 import ServiceUser from '../../service/ServiceUser';
 import Cookies from 'universal-cookie';
-import {ToastSuccess} from '../../components/poPup/Toast';
-const cookies = new Cookies();
-const token = cookies.get('token');
+import {
+    ToastError,
+    ToastInfo,
+    ToastSuccess,
+} from '../../components/poPup/Toast';
 
 const Cart = ({  isOpen, openModal, closeModal,token}) => {
     const [items, setItems] = useState([]);
     const [errorMessage, setErrorMessage] = useState(false);
+    const [quantity, setQuantity] = useState(1)
+    const handleQuantityChange = (event,ItemId) => {
+        setQuantity(parseInt(event.target.value));
+        CreateCart(event,ItemId,event.target.value)
+    };
+
+    console.log(token)
+    const CreateCart = (event,ItemId,quantity) => {
+        event.preventDefault();
+
+        if(token === undefined) {
+            ToastInfo("Pour ajouter un produit à votre panier, vous devez vous connecter ou créer un nouveau compte")
+
+        }else {
+            let data = {
+                ItemId: ItemId,
+                Quantity: quantity
+            }
+            ServiceUser.CreateCartUser(token, data)
+                .then(data => {
+                    ToastSuccess(data.data.message);
+                })
+                .catch(error => {
+                    setErrorMessage(true);
+                    ToastError(error);
+                    console.error('Erreur de requête :', error);
+                });
+        }
+    };
 
     useEffect(() => {
         ServiceUser.GetCartUser(token)
@@ -89,7 +120,22 @@ const Cart = ({  isOpen, openModal, closeModal,token}) => {
                                                                     </div>
                                                                 </div>
                                                                 <div className="flex flex-1 items-end justify-between text-sm">
-                                                                    <p className="text-gray-500">Quantité : {item.quantity}</p>
+                                                                    <select
+                                                                        id="location"
+                                                                        name="location"
+                                                                        value={quantity}
+                                                                        onChange={(e) => handleQuantityChange(e, item.items.id)}
+                                                                        className="mt-2 block w-20 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                                    >
+                                                                        <option>1</option>
+                                                                        <option>2</option>
+                                                                        <option>3</option>
+                                                                        <option>4</option>
+                                                                        <option>6</option>
+                              npm start                                          <option>7</option>
+                                                                        <option>8</option>
+                                                                        <option>9</option>
+                                                                    </select>
                                                                     <div className="flex">
                                                                         <button
                                                                             type="button"

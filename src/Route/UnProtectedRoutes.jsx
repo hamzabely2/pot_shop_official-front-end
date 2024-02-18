@@ -12,6 +12,13 @@ import PasswordProfile from '../page/pageUser/profile/PasswordProfile';
 import CommandeProfile from '../page/pageUser/profile/CommandeProfile';
 import ItemDetails from '../page/pagePublic/item/ItemDetails';
 import Creation from '../page/pageUser/Creation';
+import ItemAdmin from '../page/pageAdmin/itemAdmin/ItemAdmin';
+import CommandeAdmin from '../page/pageAdmin/CommandeAdmin';
+import UserAdmin from '../page/pageAdmin/userAdmin/UserAdmin';
+import CategoryAdmin from '../page/pageAdmin/itemAdmin/itemDetails/CategoryAdmin';
+import CreateItem from '../page/pageAdmin/itemAdmin/createItem/CreateItem';
+import MaterialAdmin
+  from '../page/pageAdmin/itemAdmin/itemDetails/MaterialAdmin';
 
 export const Roles = {
   user: "User",
@@ -22,19 +29,19 @@ export const auth_routes = [
   {
     path: "/public/home",
     ele: <Home></Home>,
-    availability:[Roles.visitor, Roles.user, Roles.admin]
+    availability:[Roles.visitor, Roles.user]
 
   },
   {
     path: "/public/nous",
     ele: <Nous></Nous>,
-    availability:[Roles.visitor, Roles.user, Roles.admin]
+    availability:[Roles.visitor, Roles.user]
 
   },
   {
     path: "/public/item",
     ele: <Item></Item>,
-    availability:[Roles.visitor, Roles.user, Roles.admin]
+    availability:[Roles.visitor, Roles.user]
 
   },
   {
@@ -61,14 +68,42 @@ export const auth_routes = [
 ]
 export const admin_routes = [
   {
-    path: "/admin/homeAdmin",
-    ele: <HomeAdmin />,
-    availability:[Roles.admin,Roles.user]
-  }
+    path: "/admin/home",
+    ele: <HomeAdmin/>,
+    availability:[ Roles.admin]
+  },
+  {
+    path: "/admin/item",
+    ele: <ItemAdmin/>,
+    availability:[ Roles.admin]
+  },  {
+    path: "/admin/item/create",
+    ele: <CreateItem/>,
+    availability:[ Roles.admin]
+  },  {
+    path: "/admin/user",
+    ele: <UserAdmin/>,
+    availability:[ Roles.admin]
+  },
+  {
+    path: "/admin/commande",
+    ele: <CommandeAdmin/>,
+    availability:[ Roles.admin]
+  },
+  {
+    path: "/admin/item/material",
+    ele: <MaterialAdmin/>,
+    availability:[ Roles.admin]
+  },
+  {
+    path: "/admin/item/category",
+    ele: <CategoryAdmin/>,
+    availability:[ Roles.admin]
+  },
 ]
 export const user_routes = [
   {
-    path: "/public/Collection",
+    path: "/public/collection",
     ele: <Collection/>,
     availability:[Roles.visitor, Roles.user, Roles.admin]
   },

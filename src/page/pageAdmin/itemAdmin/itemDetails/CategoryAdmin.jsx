@@ -1,16 +1,20 @@
-import AlertApi from '../../../components/skeletons/AlertApi';
+import AlertApi from '../../../../components/skeletons/AlertApi';
 import React, {useEffect, useState} from 'react';
-import ServiceItem from '../../../service/ServiceItem';
-import {ToastError} from '../../../components/poPup/Toast';
+import ServiceItem from '../../../../service/ServiceItem';
+import {ToastError} from '../../../../components/poPup/Toast';
 import {Link} from 'react-router-dom';
-import ServiceUser from '../../../service/ServiceUser';
-
-export default function UserAdmin() {
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+export default function CategoryAdmin() {
   const [item, setItem] = useState([]);
   let [errorMessage , setErrorMessage] = useState(false);
+  const [token, setToken] = useState(cookies.get('token'));
+  useEffect(() => {
+    setToken(cookies.get('token'));
+  }, [cookies.get('token')]);
 
   useEffect(() => {
-    ServiceUser.GetAllUser()
+    ServiceItem.GetAllCategories(token)
         .then(data => {
           setItem(data.data.result);
         })
@@ -27,7 +31,7 @@ export default function UserAdmin() {
         <div >
           <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
             <div className="sm:flex-auto">
-              <h1 className="text-base font-semibold leading-6 text-gray-900">Listes Produits</h1>
+              <h1 className="text-base font-semibold leading-6 text-gray-900">Liste catégorie</h1>
             </div>
             <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
               <button
@@ -47,7 +51,7 @@ export default function UserAdmin() {
       <div className="py-10">
         <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
           <div className="sm:flex-auto">
-            <h1 className="text-base font-semibold leading-6 text-gray-900">List utilisateur</h1>
+            <h1 className="text-base font-semibold leading-6 text-gray-900">List produits</h1>
           </div>
           <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
             <Link
@@ -55,7 +59,7 @@ export default function UserAdmin() {
                 type="button"
                 className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Ajouter un utilisateur
+              Ajouter un catégorie
             </Link>
           </div>
         </div>
@@ -66,16 +70,10 @@ export default function UserAdmin() {
                 <thead>
                 <tr>
                   <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                    Prénom
+                    Name
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    Nom de famille
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    Email
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                    Numéro de téléphone
+                    Description
                   </th>
                   <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
                     <span className="sr-only">Edit</span>
@@ -83,20 +81,15 @@ export default function UserAdmin() {
                 </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 " >
-                {item.map((user) => (
-                    <tr key={user.id} >
+                {item.map((item) => (
+                    <tr key={item.id} >
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                        {user.firstName}
+                        {item.label}
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.lastName}</td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.email}</td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.phoneNumber}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.description}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                        <a href="#" className="text-gray-600 hover:text-indigo-900 mr-3">
-                          Modifier<span className="sr-only">, {user.Name}</span>
-                        </a>
-                        <a href="#" className="text-red-600 hover:text-indigo-900">
-                          Suspendre<span className="sr-only">, {user.Name}</span>
+                        <a href="src/page/pageAdmin/itemAdmin#" className="text-red-600 hover:text-red-50000">
+                          Supprimer<span className="sr-only ">, {item.Name}</span>
                         </a>
                       </td>
                     </tr>

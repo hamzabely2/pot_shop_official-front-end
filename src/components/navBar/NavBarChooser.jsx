@@ -12,9 +12,7 @@ function NavBarChooser({currentUserRole,handleSignOut,token }) {
 
   if(location.pathname === "/public/login" || location.pathname === "/public/register") {
     return null;
-  }else if(currentUserRole === Roles.admin) {
-    return <NavBarAdmin currentUserRole={currentUserRole} handleSignOut={handleSignOut} token={token} />
-  }else if(currentUserRole === Roles.user || currentUserRole === Roles.visitor){
+  }else {
     return <NavBar currentUserRole={currentUserRole} handleSignOut={handleSignOut}  token={token}/>
   }
 }

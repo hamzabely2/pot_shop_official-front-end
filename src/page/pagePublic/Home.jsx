@@ -3,7 +3,7 @@ import  "./pagePublic.css";
 import StrongPoint from "./StrongPoint";
 import Item from "./item/ItemHome.jsx";
 import {ToastContainer} from "react-toastify";
-import Header from "../../components/header/Header";
+import Footer from "../../components/footer/Footer";
 import Contact from "./Contact.jsx";
 import {Link} from 'react-router-dom';
 

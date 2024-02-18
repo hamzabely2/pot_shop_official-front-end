@@ -4,20 +4,19 @@ import {getRoleFromToken} from '../service/useAuth';
 import Cookies from 'universal-cookie';
 import {Roles} from './UnProtectedRoutes';
 const cookies = new Cookies();
-const token = cookies.get('token');
 
-const RequireAuth = ({ children, userroles,setCurrentUserRole,setToken }) => {
+const  RequireAuth = ({ children, userroles,setCurrentUserRole }) => {
   const location = useLocation();
   let currentUserRole;
 
   if (cookies.get("token")){
-    currentUserRole = getRoleFromToken();
+    currentUserRole = getRoleFromToken(cookies.get("token"));
   }else {
     currentUserRole = Roles.visitor;
   }
    setCurrentUserRole(currentUserRole);
-   setToken(cookies.get("token"))
 
+  console.log(currentUserRole)
 
   if (currentUserRole) {
     if (userroles) {

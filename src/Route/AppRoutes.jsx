@@ -1,12 +1,18 @@
 import React, {useState} from 'react';
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import {admin_routes, auth_routes, user_routes} from './UnProtectedRoutes';
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useLocation,
+} from 'react-router-dom';
+import { auth_routes, user_routes} from './UnProtectedRoutes';
 import RequireAuth from './RequireAuth';
-import NavBarChooser from '../components/navBar/NavBarChooser';
 import {ToastContainer} from 'react-toastify';
-import Header from '../components/header/Header';
+import FooterChooser from '../components/footer/FooterChooser';
+import NavBarChooser from '../components/navBar/NavBarChooser';
+
 const AppRoutes = () => {
-  const protectedRoutes = [...admin_routes, ...user_routes, ...auth_routes];
+  const protectedRoutes = [...user_routes, ...auth_routes];
   const [currentUserRole, setCurrentUserRole] = useState(null);
   const [token, setToken2] = useState(null);
 
@@ -41,8 +47,6 @@ const AppRoutes = () => {
                         <RequireAuth
                             userroles={e?.availability}
                             setCurrentUserRole={setCurrentUserRole}
-                            setToken={setToken2}
-                            toke={token}
                         >
                           {e.ele}
                         </RequireAuth>
@@ -52,7 +56,7 @@ const AppRoutes = () => {
             })
           }
         </Routes>
-        <Header/>
+        <FooterChooser currentUserRole={currentUserRole} handleSignOut={handleSignOut} token={token}/>
       </BrowserRouter>
   );
 };

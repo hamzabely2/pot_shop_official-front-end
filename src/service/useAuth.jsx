@@ -30,8 +30,7 @@ export const Token = () => {
     return null; // Return null if tokenData is null
 }
 
-export function getRoleFromToken() {
-    const token = cookies.get("token");
+export function getRoleFromToken(token) {
     const tokenData = decodeToken(token);
 
     if (tokenData && tokenData.hasOwnProperty("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")) {

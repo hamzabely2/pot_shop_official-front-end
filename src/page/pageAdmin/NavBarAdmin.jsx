@@ -1,4 +1,4 @@
-import  {createElement, Fragment, useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import { Menu, Transition } from '@headlessui/react'
 import {
   Bars3Icon,
@@ -9,39 +9,53 @@ import {
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import {
   Route,
-  Routes, Link,
+  Routes, Link, useNavigate,
 } from 'react-router-dom';
 import { GiPaintedPottery } from "react-icons/gi";
 import { GrDeliver } from "react-icons/gr";
-
-import HomeAdmin from './HomeAdmin';
-import ItemAdmin from './itemAdmin/ItemAdmin';
-import UserAdmin from './userAdmin/UserAdmin';
-import CommandeAdmin from './CommandeAdmin';
-
+import Cookies from 'universal-cookie';
+import RequireAuth from '../../Route/RequireAuth';
+import { Disclosure } from '@headlessui/react'
+import { ChevronRightIcon } from '@heroicons/react/20/solid'
+import {
+  admin_routes,
+} from '../../Route/UnProtectedRoutes';
+const cookies = new Cookies();
 const navigation = [
-  { name: 'Dashboard', to: '/admin/homeAdmin', icon: HomeIcon, current: false , component: HomeAdmin},
-  { name: 'Produits', to: '/admin/itemAdmin', icon: GiPaintedPottery , current: false , component: ItemAdmin},
-  { name: 'User', to: '/admin/userAdmin', icon: UsersIcon, current: false ,component: UserAdmin},
-  { name: 'Commande', to: '/admin/commandeAdmin', icon: GrDeliver , current: false, component: CommandeAdmin },
-]
+  { name: 'Tableau de bord', to: '/admin/home', icon: HomeIcon},
+  { name: 'Articles', to: '/admin/item', icon: GiPaintedPottery,
+    children: [
+      { name: 'Articles', to: '/admin/item' },
+        { name: 'Catégories', to: '/admin/item/category' },
+      { name: 'Matériaux', to: '/admin/item/material' },
 
-const userNavigation = [
-  { name: 'Your profile', href: '#' },
-  { name: 'Sign out', href: '#' },
+    ],
+  },
+  { name: 'Utilisateur', to: '/admin/user', icon: UsersIcon},
+  { name: 'Commande', to: '/admin/commande', icon: GrDeliver },
 ]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function NavBarAdmin() {
+export default function NavBarAdmin({handleSignOut}) {
+  const protectedRoutes = [...admin_routes];
+  const navigate = useNavigate();
   const [sidebarOpen ,setSidebarOpen] = useState(false)
+  const [currentUserRole, setCurrentUserRole] = useState(null);
+  const [token, setToken2] = useState(null);
+
+  const SignOut =()=> {
+    cookies.remove('token', { path: '/' });
+    navigate("/public/home")
+    handleSignOut();
+  }
 
   return (
       <>
         <div>
-          <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+          <div className="relative lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
             <div className="fle-x h-16 shrink-0  flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
               <div className="fle-x h-16 shrink-0 items-center">
               </div>
@@ -51,18 +65,57 @@ export default function NavBarAdmin() {
                     <ul role="list" className="-mx-2 space-y-1">
                       {navigation.map((item) => (
                           <li key={item.name}>
-                            <Link
-                                to={item.to}
-                                className={classNames(
-                                    item.current
-                                        ? 'bg-gray-800 text-white'
-                                        : 'text-gray-400 hover:text-white hover:bg-gray-800',
-                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                                )}
-                            >
-                              <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
-                              {item.name}
-                            </Link>
+                            {!item.children ? (
+                                <Link
+                                    to={item.to}
+                                    className={classNames(
+                                        item.current ? 'bg-gray-50' : 'text-gray-950  ',
+                                        'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-white'
+                                    )}
+                                >
+                                  <item.icon className="h-6 w-6 shrink-0 text-gray-400" aria-hidden="true" />
+                                  {item.name}
+                                </Link>
+                            ) : (
+                                <Disclosure as="div">
+                                  {({ open }) => (
+                                      <>
+                                        <Disclosure.Button
+                                            className={classNames(
+                                                item.current ? 'bg-gray-50' : '',
+                                                'flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold text-white'
+                                            )}
+                                        >
+                                          <item.icon className="h-6 w-6 shrink-0 text-gray-400" aria-hidden="true" />
+                                          {item.name}
+                                          <ChevronRightIcon
+                                              className={classNames(
+                                                  open ? 'rotate-90 text-white' : 'text-white',
+                                                  'ml-auto h-5 w-5 shrink-0'
+                                              )}
+                                              aria-hidden="true"
+                                          />
+                                        </Disclosure.Button>
+                                        <Disclosure.Panel as="ul" className="mt-1 px-2">
+                                          {item.children.map((subItem) => (
+                                              <li key={subItem.name}>
+                                                <Link
+                                                    as="a"
+                                                    to={subItem.to}
+                                                    className={classNames(
+                                                        subItem.current ? 'bg-gray-50' : ' text-gray-950',
+                                                        'block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-white'
+                                                    )}
+                                                >
+                                                  {subItem.name}
+                                                </Link>
+                                              </li>
+                                          ))}
+                                        </Disclosure.Panel>
+                                      </>
+                                  )}
+                                </Disclosure>
+                            )}
                           </li>
                       ))}
                     </ul>
@@ -129,37 +182,50 @@ export default function NavBarAdmin() {
                         leaveTo="transform opacity-0 scale-95"
                     >
                       <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                        {userNavigation.map((item) => (
-                            <Menu.Item key={item.name}>
+                            <Menu.Item>
                               {({ active }) => (
-                                  <a
-                                      href={item.href}
-                                      className={classNames(
-                                          active ? 'bg-gray-50' : '',
-                                          'block px-3 py-1 text-sm leading-6 text-gray-900'
-                                      )}
+                                  <button
+                                      onClick={SignOut}
+                                      className={`${
+                                          active ? 'bg-gray-100' : ''
+                                      } block px-4 py-2 text-sm text-red-700`}
+
                                   >
-                                    {item.name}
-                                  </a>
+                                    Se déconnecter
+                                  </button>
                               )}
                             </Menu.Item>
-                        ))}
                       </Menu.Items>
                     </Transition>
                   </Menu>
                 </div>
               </div>
             </div>
-            <main className="py-10">
-              <div className="px-4 sm:px-6 lg:px-8">
+            <main className="">
+              <div className=" sm:px-6 lg:px-8">
                 <Routes>
-                  {navigation.map((item) => (
-                      <Route
-                          key={item.name}
-                          path={item.to}
-                          element={createElement(item.component)}
-                      />
-                  ))}
+                  {
+                    protectedRoutes.map((e) => {
+                      return (
+                          <Route
+                              key={e.path}
+                              exact
+                              path={e.path}
+                              element={
+                                <RequireAuth
+                                    userroles={e?.availability}
+                                    setCurrentUserRole={setCurrentUserRole}
+                                    setToken={setToken2}
+                                    toke={token}
+                                >
+                                  {e.ele}
+                                </RequireAuth>
+                              }
+                          />
+                      );
+                    })
+                  }
+
                 </Routes>
               </div>
             </main>
