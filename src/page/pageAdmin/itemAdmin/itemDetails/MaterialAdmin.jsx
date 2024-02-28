@@ -1,49 +1,22 @@
 import AlertApi from '../../../../components/skeletons/AlertApi';
 import React, {useEffect, useState} from 'react';
-import ServiceItem from '../../../../service/ServiceItem';
-import {ToastError} from '../../../../components/poPup/Toast';
 import {Link} from 'react-router-dom';
 import Cookies from 'universal-cookie';
-const cookies = new Cookies();
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchMaterial} from '../../../../redux/material/materialAction';
 export default function MaterialAdmin() {
-  const [item, setItem] = useState([]);
-  let [errorMessage , setErrorMessage] = useState(false);
-  const [token, setToken] = useState(cookies.get('token'));
-  useEffect(() => {
-    setToken(cookies.get('token'));
-  }, [cookies.get('token')]);
+  const dispatch = useDispatch();
+  const cookies = new Cookies();
+  let materials = useSelector(state => state.material.material);
+  let error = useSelector(state => state.material.isError);
 
-  useEffect(() => {
-    ServiceItem.GetAllMaterials(token)
-        .then(data => {
-          setItem(data.data.result);
-        })
-        .catch(error => {
-          ToastError(error)
-          setErrorMessage(true)
-          console.error('Erreur de requête :', error);
-        });
+  useEffect(()=> {
+    dispatch(fetchMaterial(cookies.get('token')));
   }, [])
-  console.log(item)
 
-  if (errorMessage) {
+  if (error) {
     return (
-        <div >
-          <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
-            <div className="sm:flex-auto">
-              <h1 className="text-base font-semibold leading-6 text-gray-900">Liste catégorie</h1>
-            </div>
-            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-              <button
-                  type="button"
-                  className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Ajouter un produit
-              </button>
-            </div>
-          </div>
-          <AlertApi/>
-        </div>
+      <AlertApi/>
     )
   }
 
@@ -82,15 +55,15 @@ export default function MaterialAdmin() {
                 </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 " >
-                {item.map((item) => (
-                    <tr key={item.id} >
+                {materials.map((material) => (
+                    <tr key={material.id} >
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                        {item.label}
+                        {material.label}
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.description}</td>
+                      <td className="whitespace-nowrap w-44 px-3 py-4 text-sm text-gray-500">{material.description}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                         <a href="src/page/pageAdmin/itemAdmin#" className="text-red-600 hover:text-red-50000">
-                          Supprimer<span className="sr-only ">, {item.Name}</span>
+                          Supprimer<span className="sr-only ">, {material.Name}</span>
                         </a>
                       </td>
                     </tr>

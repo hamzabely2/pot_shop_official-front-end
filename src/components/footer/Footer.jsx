@@ -1,11 +1,10 @@
+import {Link} from 'react-router-dom';
+
 const navigation = {
     main: [
-        { name: 'About', href: '#' },
-        { name: 'Blog', href: '#' },
-        { name: 'Jobs', href: '#' },
-        { name: 'Press', href: '#' },
-        { name: 'Accessibility', href: '#' },
-        { name: 'Partners', href: '#' },
+        { name: 'Home', to: 'public/home' },
+        { name: 'Articles', to: 'public/item' },
+        { name: 'Plus sur les pots', to: 'public/nous' },
     ],
     social: [
         {
@@ -79,9 +78,9 @@ export default function Footer() {
                 <nav className=" columns-2 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
                     {navigation.main.map((item) => (
                         <div key={item.name} className="pb-6">
-                            <a href={item.href} className="text-sm leading-6 ">
+                            <Link to={item.to} className="text-sm leading-6 ">
                                 {item.name}
-                            </a>
+                            </Link>
                         </div>
                     ))}
                 </nav>
@@ -94,7 +93,7 @@ export default function Footer() {
                     ))}
                 </div>
                 <p className="mt-5 text-center text-xs leading-5 ">
-                    &copy;  Your Pot shop, Inc.
+                    &copy;  Pot shop
                 </p>
             </div>
         </footer>

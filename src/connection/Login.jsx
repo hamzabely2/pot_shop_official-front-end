@@ -1,28 +1,21 @@
 import React, {useState} from 'react';
-import {ToastError, ToastSuccess} from "../components/poPup/Toast";
-import { LoginService} from "../service/ServiceConnection";
+import {
+    DisplayApiErrors,
+    ToastError,
+    ToastSuccess,
+} from '../components/poPup/Toast';
 import {Link, useNavigate} from "react-router-dom";
-import {getRoleFromToken, setCookie} from '../service/useAuth';
 import {BsArrowLeft} from 'react-icons/bs';
 import {Roles} from '../Route/UnProtectedRoutes';
+import {LoginService} from '../service/ConnectionService';
+import {getRoleFromToken, setCookie} from '../service/TokenService';
 
 const Login = ( ) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const navigate = useNavigate();
 
-    const displayApiErrors = (errors) => {
-        for (const key in errors ) {
-            if (errors.hasOwnProperty(key)) {
-                const errorMessages = errors[key];
-                if (Array.isArray(errorMessages)) {
-                    errorMessages.forEach((errorMessage) => {
-                        ToastError(errorMessage);
-                    });
-                }
-            }
-        }
-    };
+
     const handleLogin = async (event) =>{
         event.preventDefault();
 
@@ -31,11 +24,12 @@ const Login = ( ) => {
             if (response.status === 200) {
                 ToastSuccess(response.data.message);
                 let token =  response.data.result
-                setCookie("token", token,2);
+                setCookie("token", token);
                 getRoleFromToken(token) === Roles.admin ? navigate("/admin/home") : navigate("/public/home");
             }else if (response.response.status === 400) {
+                console.log(response)
                 ToastError(response.response.data.message);
-                displayApiErrors(response.response.data.errors);
+                DisplayApiErrors(response.response.data.errors);
             }
         }catch (error){
             console.error(error);
@@ -44,7 +38,7 @@ const Login = ( ) => {
         }
     }
     const backgroundStyle = {
-        backgroundImage: `url("/img/imgConnection.jpg")`,
+        backgroundImage: `url("/img/imgPage/imgConnection.jpg")`,
     };
 
     return (
@@ -102,14 +96,7 @@ const Login = ( ) => {
                                                     >
                                                         Password
                                                     </label>
-                                                    <div className="text-sm">
-                                                        <a
-                                                            href="login#"
-                                                            className="font-semibold text-indigo-600 hover:text-indigo-500"
-                                                        >
-                                                            Forgot password?
-                                                        </a>
-                                                    </div>
+
                                                 </div>
                                                 <div className="mt-2">
                                                     <input

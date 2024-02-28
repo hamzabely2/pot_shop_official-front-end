@@ -1,15 +1,14 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { HeartIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline'
-import {useLocation, useNavigate} from 'react-router-dom';
-import ServiceUser from '../../../service/ServiceUser';
+import {useLocation} from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import {
-  ToastError,
   ToastInfo,
-  ToastSuccess,
 } from '../../../components/poPup/Toast';
+import {createCart} from '../../../redux/cart/cartAction';
+import {useDispatch} from 'react-redux';
 const cookies = new Cookies();
 
 const product = {
@@ -67,43 +66,24 @@ function classNames(...classes) {
 }
 
 export default function ItemDetails() {
-  const navigate = useNavigate();
-  let [errorMessage , setErrorMessage] = useState(false);
   const [selectedColor, setSelectedColor] = useState(product.colors[0])
   const [quantity, setQuantity] = useState(1)
-  const [cart, setCart] = useState();
   const location = useLocation();
   const { item } = location.state;
-  const [token, setToken] = useState(cookies.get('token'));
-
-  useEffect(() => {
-    setToken(cookies.get('token'));
-  }, [cookies.get('token')]);
-
+  const dispatch = useDispatch();
   const handleQuantityChange = (event) => {
     setQuantity(parseInt(event.target.value));
   };
   const CreateCart = (event) => {
     event.preventDefault();
-
-    if(token === undefined) {
-      ToastInfo("Pour ajouter un produit à votre panier, vous devez vous connecter ou créer un nouveau compte")
-
-    }else {
-      let data = {
+    if(!cookies.get('token')){
+        ToastInfo("Pour ajouter un produit à votre panier, vous devez vous connecter ou créer un nouveau compte")
+    }else{
+      let payload  = {
         ItemId: item.id,
         Quantity: quantity
       }
-      ServiceUser.CreateCartUser(token, data)
-          .then(data => {
-            setCart(data.data);
-            ToastSuccess(data.data.message);
-          })
-          .catch(error => {
-            setErrorMessage(true);
-            ToastError(error);
-            console.error('Erreur de requête :', error);
-          });
+      dispatch(createCart({ token: cookies.get('token'),data : payload }))
     }
   };
 
@@ -193,13 +173,13 @@ export default function ItemDetails() {
                   <RadioGroup value={selectedColor} onChange={setSelectedColor} className="mt-2">
                     <RadioGroup.Label className="sr-only">Couleur</RadioGroup.Label>
                     <span className="flex items-center space-x-3">
-                    {product.colors.map((color) => (
+                    {item.colors.map((color) => (
                         <RadioGroup.Option
-                            key={color.name}
+                            key={color.hex}
                             value={color}
                             className={({ active, checked }) =>
                                 classNames(
-                                    color.selectedColor,
+                                    color.hex,
                                     active && checked ? 'ring ring-offset-1' : '',
                                     !active && checked ? 'ring-2' : '',
                                     'relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none'
@@ -207,12 +187,13 @@ export default function ItemDetails() {
                             }
                         >
                           <RadioGroup.Label as="span" className="sr-only">
-                            {color.name}
+                            {color.hex}
                           </RadioGroup.Label>
                           <span
                               aria-hidden="true"
+                              style={{ backgroundColor: `${color.hex}` }}
                               className={classNames(
-                                  color.bgColor,
+                                  color.hex,
                                   'h-8 w-8 rounded-full border border-black border-opacity-10'
                               )}
                           />
@@ -273,7 +254,7 @@ export default function ItemDetails() {
                               <h3>
                                 <Disclosure.Button className="group relative flex w-full items-center justify-between py-6 text-left">
                             <span
-                                className={classNames(open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium')}
+                                className={classNames(open ? 'text-text-gray-500' : 'text-gray-900', 'text-sm font-medium')}
                             >
                               {item.categories.label}
                             </span>
@@ -307,14 +288,14 @@ export default function ItemDetails() {
                           <h3>
                             <Disclosure.Button className="group relative flex w-full items-center justify-between py-6 text-left">
                             <span
-                                className={classNames(open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium')}
+                                className={classNames(open ? 'text-gray-500' : 'text-gray-950', 'text-sm font-medium')}
                             >
                               {item.materials.label}
                             </span>
                               <span className="ml-6 flex items-center">
                               {open ? (
                                   <MinusIcon
-                                      className="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500"
+                                      className="block h-6 w-6 text-gray-500 group-hover:text-indigo-500"
                                       aria-hidden="true"
                                   />
                               ) : (

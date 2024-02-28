@@ -1,68 +1,47 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { LuShoppingCart } from 'react-icons/lu';
-import ServiceUser from '../../service/ServiceUser';
 import Cookies from 'universal-cookie';
+import {Link} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 import {
-    ToastError,
-    ToastInfo,
-    ToastSuccess,
-} from '../../components/poPup/Toast';
+    createCart,
+    deleteCart,
+    fetchCart,
+    updateCart,
+} from '../../redux/cart/cartAction';
+import {InformationCircleIcon} from '@heroicons/react/16/solid';
+import InfoEmpty from '../../components/skeletons/InfoEmpty';
 
-const Cart = ({  isOpen, openModal, closeModal,token}) => {
-    const [items, setItems] = useState([]);
-    const [errorMessage, setErrorMessage] = useState(false);
-    const [quantity, setQuantity] = useState(1)
-    const handleQuantityChange = (event,ItemId) => {
-        setQuantity(parseInt(event.target.value));
-        CreateCart(event,ItemId,event.target.value)
-    };
-
-    console.log(token)
-    const CreateCart = (event,ItemId,quantity) => {
-        event.preventDefault();
-
-        if(token === undefined) {
-            ToastInfo("Pour ajouter un produit à votre panier, vous devez vous connecter ou créer un nouveau compte")
-
-        }else {
-            let data = {
-                ItemId: ItemId,
-                Quantity: quantity
-            }
-            ServiceUser.CreateCartUser(token, data)
-                .then(data => {
-                    ToastSuccess(data.data.message);
-                })
-                .catch(error => {
-                    setErrorMessage(true);
-                    ToastError(error);
-                    console.error('Erreur de requête :', error);
-                });
-        }
-    };
+const Cart = ({  isOpen, openModal, closeModal}) => {
+    const cookies = new Cookies();
+    const [quantity, setQuantity] = useState()
+    const dispatch = useDispatch();
+    let cart = useSelector(state => state.cart.cart);
+    let error = useSelector(state => state.cart.isError);
+    const options = [];
+    for (let i = 1; i <= 50; i++) {
+        options.push(<option key={i}>{i}</option>);
+    }
 
     useEffect(() => {
-        ServiceUser.GetCartUser(token)
-            .then(data => {
-                setItems(data.data.result);
-            })
-            .catch(error => {
-                setErrorMessage(true);
-                console.error('Erreur de requête :', error);
-            });
-    }, [items]);
+        dispatch((fetchCart(cookies.get('token'))))
+    }, [])
 
-    const DeleteItem = (itemId) => {
-        ServiceUser.DeleteItemInCart(token, itemId)
-            .then(data => {
-                console.log(data)
-                ToastSuccess(data.data.message);
-            })
-            .catch(error => {
-                setErrorMessage(true);
-                console.error('Erreur de requête :', error);
-            });
+
+   let total = 0;
+    const HandleQuantityChange = (e,ItemId) => {
+        setQuantity(+e.target.value);
+        EditQuantityItem(e,ItemId,+e.target.value)
+    };
+    const EditQuantityItem = (event,itemId,quantity) => {
+        event.preventDefault();
+        let payload = { ItemId: itemId, Quantity: quantity}
+        dispatch(updateCart({token: cookies.get('token'),payload : payload}))
+    };
+
+    const DeleteCart = (itemId) => {
+        dispatch(deleteCart({ token: cookies.get('token'), id : itemId }))
     };
 
     return (
@@ -71,7 +50,7 @@ const Cart = ({  isOpen, openModal, closeModal,token}) => {
                 onClick={openModal}
                 className="relative rounded-full p-1 text-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-40"
             >
-                <LuShoppingCart className="" style={{}} />
+                <LuShoppingCart  />
             </button>
 
             <Transition.Root show={isOpen} as={Fragment}>
@@ -100,8 +79,8 @@ const Cart = ({  isOpen, openModal, closeModal,token}) => {
                                         <div className="mt-8">
                                             <div className="flow-root">
                                                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                                                    {items.map((item) => (
-                                                        <li key={item.items.id} className="flex py-6">
+                                                    {cart.length > 0 ? cart.map((item) => (
+                                                        <li key={item.items.id}  className="flex py-6">
                                                             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                                                 <img
                                                                     src={item.items.images && item.items.images.length > 0 ? `data:image/jpeg;base64,${item.items.images[0]}` : '/placeholder.jpg'}
@@ -116,30 +95,23 @@ const Cart = ({  isOpen, openModal, closeModal,token}) => {
                                                                         <h3>
                                                                             <a href={item.items.href}>{item.items.name}</a>
                                                                         </h3>
-                                                                        <p className="ml-4">Prix total :{item.subtotal}</p>
+                                                                        <p className="ml-4">Prix total: {item.subtotal} $</p>
                                                                     </div>
                                                                 </div>
                                                                 <div className="flex flex-1 items-end justify-between text-sm">
                                                                     <select
                                                                         id="location"
                                                                         name="location"
-                                                                        value={quantity}
-                                                                        onChange={(e) => handleQuantityChange(e, item.items.id)}
+                                                                        value={item.quantity}
+                                                                        onChange={(e) => HandleQuantityChange(e, item.items.id)}
                                                                         className="mt-2 block w-20 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                                     >
-                                                                        <option>1</option>
-                                                                        <option>2</option>
-                                                                        <option>3</option>
-                                                                        <option>4</option>
-                                                                        <option>6</option>
-                              npm start                                          <option>7</option>
-                                                                        <option>8</option>
-                                                                        <option>9</option>
+                                                                        {options}
                                                                     </select>
                                                                     <div className="flex">
                                                                         <button
                                                                             type="button"
-                                                                            onClick={() => DeleteItem(item.items.id)}
+                                                                            onClick={() => DeleteCart(item.items.id)}
                                                                             className="font-medium text-red-600 hover:text-red-200"
                                                                         >
                                                                             Retirer
@@ -148,7 +120,9 @@ const Cart = ({  isOpen, openModal, closeModal,token}) => {
                                                                 </div>
                                                             </div>
                                                         </li>
-                                                    ))}
+                                                    )) :
+                                                       <InfoEmpty message={"le panier est vide"} />
+                                                    }
                                                 </ul>
                                             </div>
                                         </div>
@@ -156,11 +130,13 @@ const Cart = ({  isOpen, openModal, closeModal,token}) => {
                                     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                                         <div className="flex justify-between text-base font-medium text-gray-900">
                                             <p>Total</p>
-                                            <p>$0</p>
+                                            <p>{total}$</p>
                                         </div>
                                         <p className="mt-0.5 text-sm text-gray-500">Frais de port et taxes calculés à la caisse.</p>
                                         <div className="mt-6">
-                                            <a href="cart#" className="flex items-center justify-center rounded-md border border-transparent bg-gray-950 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-gray-900">Passe la Commande</a>
+                                            <Link to="/public/order"
+                                                  className="flex items-center justify-center rounded-md border border-transparent bg-gray-950 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-gray-900">Passe la Commande
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>

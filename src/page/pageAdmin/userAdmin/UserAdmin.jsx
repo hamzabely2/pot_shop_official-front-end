@@ -1,16 +1,15 @@
 import AlertApi from '../../../components/skeletons/AlertApi';
 import React, {useEffect, useState} from 'react';
-import ServiceItem from '../../../service/ServiceItem';
 import {ToastError} from '../../../components/poPup/Toast';
 import {Link} from 'react-router-dom';
-import ServiceUser from '../../../service/ServiceUser';
+import UserService from '../../../service/UserService';
 
 export default function UserAdmin() {
   const [item, setItem] = useState([]);
   let [errorMessage , setErrorMessage] = useState(false);
 
   useEffect(() => {
-    ServiceUser.GetAllUser()
+    UserService.GetAllUser()
         .then(data => {
           setItem(data.data.result);
         })

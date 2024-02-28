@@ -1,78 +1,60 @@
 import AlertApi from '../../../components/skeletons/AlertApi';
 import React, {useEffect, useState} from 'react';
-import ServiceItem from '../../../service/ServiceItem';
-import {ToastError} from '../../../components/poPup/Toast';
-import {Link} from 'react-router-dom';
-import ColorDialog from './itemDetails/dialogsItem/ColorDialog';
+import {MdDelete, MdEdit} from 'react-icons/md';
+import Cookies from 'universal-cookie';
+import {useDispatch, useSelector} from 'react-redux';
+import {deleteItem, fetchItem} from '../../../redux/item/itemAction';
+import {fetchMaterial} from '../../../redux/material/materialAction';
+import {fetchCategory} from '../../../redux/category/categoryAction';
+import {fetchColor} from '../../../redux/color/colorAction';
 
-export default function ItemAdmin({ }) {
-  const [item, setItem] = useState([]);
-  let [errorMessage , setErrorMessage] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  let [isConnected, setIsConnected] = useState(false);
+export default function ItemAdmin({setCurrentComponent, setItemId }) {
+  const cookies = new Cookies();
+  const dispatch = useDispatch();
+  const item = useSelector(state => state.item.data);
+  let error = useSelector(state => state.item.isError);
 
   useEffect(() => {
-    ServiceItem.GetAllItem()
-        .then(data => {
-          setItem(data.data.result);
-        })
-        .catch(error => {
-          ToastError(error)
-          setErrorMessage(true)
-          console.error('Erreur de requête :', error);
-        });
+    dispatch(fetchItem());
+    dispatch(fetchMaterial(cookies.get('token')));
+    dispatch(fetchCategory(cookies.get('token')));
+    dispatch(fetchColor(cookies.get('token')));
   }, [])
-  console.log(item)
-
-  const openColorDialog = () => {
-    setIsCartOpen(true);
-  }
-
-  const openCart = () => {
-    setIsCartOpen(true);
-  };
-
-  const closeCart = () => {
-    setIsCartOpen(false);
-  };
 
 
-  if (errorMessage) {
+  if (error) {
     return (
-        <div >
-          <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
-            <div className="sm:flex-auto">
-              <h1 className="text-base font-semibold leading-6 text-gray-900">Liste articles</h1>
-            </div>
-            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-              <button
-                  type="button"
-                  className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Ajouter un article
-              </button>
-            </div>
-          </div>
-          <AlertApi/>
-        </div>
+        <AlertApi/>
     )
   }
+  const DeleteItem = (itemId) => {
+    dispatch(deleteItem({ token: cookies.get('token'), id : itemId }))
+  };
+
+  const DetailsItem = (item) => {
+    setCurrentComponent("itemUpdated")
+    setItemId(item)
+  };
+
+  const CreateItem= () => {
+    setCurrentComponent("createItem")
+  };
 
   return (
       <div className="py-10">
-        <ColorDialog  isOpen={isCartOpen} openModal={openCart} closeModal={closeCart}/>
+
         <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
           <div className="sm:flex-auto">
-            <h1 className="text-base font-semibold leading-6 text-gray-900">List produits</h1>
+            <h1 className="text-base font-semibold leading-6 text-gray-900">Liste articles</h1>
           </div>
           <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-            <Link
-                to={"/admin/item/create"}
+            <button
+                onClick={() => CreateItem()}
                 type="button"
-                className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="block rounded-md bg-gray-950 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-700  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Ajouter un produit
-            </Link>
+              Ajouter un article
+            </button>
           </div>
         </div>
         <div className="mt-8 flow-root">
@@ -108,7 +90,7 @@ export default function ItemAdmin({ }) {
                 </thead>
                 <tbody className="divide-y divide-gray-200 " >
                 {item.map((item) => (
-                    <tr key={item.id} >
+                      <tr key={item.id}  onClick={() => DetailsItem(item)} className="text-red-700 hover:bg-gray-50">
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0 ">
                         <img
                             src={item.images && item.images.length > 0 ? `data:image/jpeg;base64,${item.images[0]}` : '/placeholder.jpg'}
@@ -131,25 +113,11 @@ export default function ItemAdmin({ }) {
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.createdDate}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                        <button onClick={() => openColorDialog(item.id)}>
-                          <span className="mr-2 inline-flex items-center rounded-md bg-gray-950 px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-pink-400/20">
-                            Ajouter une couleur
-                          </span>
-                        </button>
-
-                        <button>
-                          <span className="mr-2 inline-flex items-center rounded-md bg-gray-950 px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-pink-400/20">
-                            Ajouter une image
-                          </span>
-                        </button>
-                        <a href="#" className="text-gray-950 hover:text-gray-900 mr-3">
-                          Modifier<span className="sr-only ">, {item.Name}</span>
-                        </a>
-                        <a href="#" className="text-red-600 hover:text-red-50000">
-                          Supprimer<span className="sr-only ">, {item.Name}</span>
-                        </a>
+                        <button className="m-1" style={{ fontSize: '20px' }}>
+                        <MdDelete  onClick={() => DeleteItem(item.id)} className="text-red-700" />
+                      </button>
                       </td>
-                    </tr>
+                      </tr>
                 ))}
                 </tbody>
               </table>

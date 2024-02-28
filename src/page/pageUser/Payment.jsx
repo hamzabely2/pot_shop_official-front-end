@@ -1,54 +1,101 @@
-import { Fragment } from 'react'
-import { Popover, Transition } from '@headlessui/react'
-import { ChevronUpIcon } from '@heroicons/react/20/solid'
-
-const products = [
-  {
-    id: 1,
-    name: 'Micro Backpack',
-    href: '#',
-    price: '$70.00',
-    color: 'Moss',
-    size: '5L',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/checkout-page-04-product-01.jpg',
-    imageAlt:
-        'Moss green canvas compact backpack with double top zipper, zipper front pouch, and matching carry handle and backpack straps.',
-  },
-  // More products...
-]
+import {Fragment, useEffect, useState} from 'react';
+import {Listbox, Popover, Transition} from '@headlessui/react';
+import {
+  CheckIcon,
+  ChevronUpDownIcon,
+  ChevronUpIcon,
+} from '@heroicons/react/20/solid';
+import UserService from '../../service/UserService';
+import {ToastError} from '../../components/poPup/Toast';
+import Cookies from 'universal-cookie';
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
 
 export default function Payment() {
+  const cookies = new Cookies();
+  const [cart, setCart] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(false);
+  const [token, setToken] = useState();
+  const [total, setTotal] = useState(0)
+  let [adresses , setAdresses] = useState([]);
+
+
+  useEffect(() => {
+    const tokenFromCookie = cookies.get('token');
+    if (tokenFromCookie) {
+      setToken(tokenFromCookie);
+    }
+  }, []);
+
+
+  useEffect(() => {
+    if (token) {
+      UserService.GetCartUser(token)
+          .then(data => {
+            setCart(data.data.result);
+            const totalAmount = data.data.result.reduce((acc, item) => acc + item.subtotal, 0);
+            setTotal(totalAmount);
+          })
+          .catch(error => {
+            ToastError(error)
+            setErrorMessage(true);
+            console.error('Erreur de requête :', error);
+          });
+    }
+  }, [token,cart]);
+
+  useEffect(() => {
+    if(token) {
+      UserService.GetAdressUser(token)
+          .then(data => {
+            setAdresses(data.data.result);
+          })
+          .catch(error => {
+            ToastError(error)
+            setErrorMessage(true)
+            console.error('Erreur de requête :', error);
+          });
+    }
+  }, [token,adresses])
+
+  const formattedAddresses = adresses.map(address => {
+    return `${address.id} ${address.city} ${address.state} ${address.street} ${address.code}`;
+  });
+  console.log(formattedAddresses);
+
+  const [selectedShippingAdress, setSelectedShippingAdress] = useState(formattedAddresses[1])
+  const [selectedBilingAdress, setSelectedBilingAdress] = useState(formattedAddresses[1])
+
   return (
       <div className="bg-white">
-        <div className="fixed left-0 top-0 hidden h-full w-1/2 bg-white lg:block" aria-hidden="true" />
-        <div className="fixed right-0 top-0 hidden h-full w-1/2 bg-gray-50 lg:block" aria-hidden="true" />
-
         <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-x-16 lg:grid-cols-2 lg:px-8 xl:gap-x-48">
-          <h1 className="sr-only">Order information</h1>
-
+          <h1 className="sr-only">Informations sur la commande</h1>
           <section
               aria-labelledby="summary-heading"
               className="bg-gray-50 px-4 pb-10 pt-16 sm:px-6 lg:col-start-2 lg:row-start-1 lg:bg-transparent lg:px-0 lg:pb-16"
           >
             <div className="mx-auto max-w-lg lg:max-w-none">
               <h2 id="summary-heading" className="text-lg font-medium text-gray-900">
-                Order summary
+                Récapitulatif de la commande
               </h2>
 
               <ul role="list" className="divide-y divide-gray-200 text-sm font-medium text-gray-900">
-                {products.map((product) => (
-                    <li key={product.id} className="flex items-start space-x-4 py-6">
-                      <img
-                          src={product.imageSrc}
-                          alt={product.imageAlt}
-                          className="h-20 w-20 flex-none rounded-md object-cover object-center"
-                      />
-                      <div className="flex-auto space-y-1">
-                        <h3>{product.name}</h3>
-                        <p className="text-gray-500">{product.color}</p>
-                        <p className="text-gray-500">{product.size}</p>
+                {cart.map((item) => (
+                    <li key={item.id} className="flex items-start space-x-4 py-6">
+                      <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                        <img
+                            src={item.items.images && item.items.images.length > 0 ? `data:image/jpeg;base64,${item.items.images[0]}` : '/placeholder.jpg'}
+                            alt={item.items.name}
+                            className="h-full w-full object-cover object-center group-hover:opacity-75"
+                        />
                       </div>
-                      <p className="flex-none text-base font-medium">{product.price}</p>
+                      <div className="flex-auto space-y-1">
+                        <h3>{item.items.name}</h3>
+                        <p className="text-gray-500">{item.items.name}</p>
+                        <p className="text-gray-500">{item.items.price}</p>
+                      </div>
+                      <p className="flex-none text-base font-medium">{item.price}</p>
                     </li>
                 ))}
               </ul>
@@ -56,7 +103,7 @@ export default function Payment() {
               <dl className="hidden space-y-6 border-t border-gray-200 pt-6 text-sm font-medium text-gray-900 lg:block">
                 <div className="flex items-center justify-between">
                   <dt className="text-gray-600">Subtotal</dt>
-                  <dd>$320.00</dd>
+                  <dd>{total}$</dd>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -113,7 +160,7 @@ export default function Payment() {
                         <dl className="mx-auto max-w-lg space-y-6">
                           <div className="flex items-center justify-between">
                             <dt className="text-gray-600">Subtotal</dt>
-                            <dd>$320.00</dd>
+                            <dd>{total}$</dd>
                           </div>
 
                           <div className="flex items-center justify-between">
@@ -138,34 +185,19 @@ export default function Payment() {
             <div className="mx-auto max-w-lg lg:max-w-none">
               <section aria-labelledby="contact-info-heading">
                 <h2 id="contact-info-heading" className="text-lg font-medium text-gray-900">
-                  Contact information
+                  Informations sur les contacts
                 </h2>
-
-                <div className="mt-6">
-                  <label htmlFor="email-address" className="block text-sm font-medium text-gray-700">
-                    Email address
-                  </label>
-                  <div className="mt-1">
-                    <input
-                        type="email"
-                        id="email-address"
-                        name="email-address"
-                        autoComplete="email"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                  </div>
-                </div>
               </section>
 
               <section aria-labelledby="payment-heading" className="mt-10">
                 <h2 id="payment-heading" className="text-lg font-medium text-gray-900">
-                  Payment details
+                  Détails du paiement
                 </h2>
 
                 <div className="mt-6 grid grid-cols-3 gap-x-4 gap-y-6 sm:grid-cols-4">
                   <div className="col-span-3 sm:col-span-4">
                     <label htmlFor="name-on-card" className="block text-sm font-medium text-gray-700">
-                      Name on card
+                      Nome sulla carta
                     </label>
                     <div className="mt-1">
                       <input
@@ -180,7 +212,7 @@ export default function Payment() {
 
                   <div className="col-span-3 sm:col-span-4">
                     <label htmlFor="card-number" className="block text-sm font-medium text-gray-700">
-                      Card number
+                      Numéro de carte
                     </label>
                     <div className="mt-1">
                       <input
@@ -195,7 +227,7 @@ export default function Payment() {
 
                   <div className="col-span-2 sm:col-span-3">
                     <label htmlFor="expiration-date" className="block text-sm font-medium text-gray-700">
-                      Expiration date (MM/YY)
+                      Date d'expiration (MM/AA)
                     </label>
                     <div className="mt-1">
                       <input
@@ -226,106 +258,125 @@ export default function Payment() {
               </section>
 
               <section aria-labelledby="shipping-heading" className="mt-10">
-                <h2 id="shipping-heading" className="text-lg font-medium text-gray-900">
-                  Shipping address
-                </h2>
+                <Listbox value={selectedShippingAdress} onChange={setSelectedShippingAdress}>
+                  {({ open }) => (
+                      <>
+                        <Listbox.Label className="mt-5 block text-sm font-medium leading-6 text-gray-900">Adresse de facturation</Listbox.Label>
+                        <div className="relative mt-2">
+                          <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <span className="block truncate">{selectedShippingAdress}</span>
+                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              </span>
+                          </Listbox.Button>
 
-                <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-3">
-                  <div className="sm:col-span-3">
-                    <label htmlFor="company" className="block text-sm font-medium text-gray-700">
-                      Company
-                    </label>
-                    <div className="mt-1">
-                      <input
-                          type="text"
-                          id="company"
-                          name="company"
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
-                    </div>
-                  </div>
+                          <Transition
+                              show={open}
+                              as={Fragment}
+                              leave="transition ease-in duration-100"
+                              leaveFrom="opacity-100"
+                              leaveTo="opacity-0"
+                          >
+                            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                              {formattedAddresses.map((person) => (
+                                  <Listbox.Option
+                                      className={({ active }) =>
+                                          classNames(
+                                              active ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                                              'relative cursor-default select-none py-2 pl-3 pr-9'
+                                          )
+                                      }
+                                      value={person}
+                                  >
+                                    {({ selected, active }) => (
+                                        <>
+                        <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                          {person}
+                        </span>
 
-                  <div className="sm:col-span-3">
-                    <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                      Address
-                    </label>
-                    <div className="mt-1">
-                      <input
-                          type="text"
-                          id="address"
-                          name="address"
-                          autoComplete="street-address"
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
-                    </div>
-                  </div>
+                                          {selected ? (
+                                              <span
+                                                  className={classNames(
+                                                      active ? 'text-white' : 'text-indigo-600',
+                                                      'absolute inset-y-0 right-0 flex items-center pr-4'
+                                                  )}
+                                              >
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                                          ) : null}
+                                        </>
+                                    )}
+                                  </Listbox.Option>
+                              ))}
+                            </Listbox.Options>
+                          </Transition>
+                        </div>
+                      </>
+                  )}
+                </Listbox>
+                <Listbox value={selectedBilingAdress} onChange={setSelectedBilingAdress}>
+                  {({ open }) => (
+                      <>
+                        <Listbox.Label className="mt-5 block text-sm font-medium leading-6 text-gray-900">Adresse de livraison</Listbox.Label>
+                        <div className="relative mt-2">
+                          <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <span className="block truncate">{selectedBilingAdress}</span>
+                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              </span>
+                          </Listbox.Button>
 
-                  <div className="sm:col-span-3">
-                    <label htmlFor="apartment" className="block text-sm font-medium text-gray-700">
-                      Apartment, suite, etc.
-                    </label>
-                    <div className="mt-1">
-                      <input
-                          type="text"
-                          id="apartment"
-                          name="apartment"
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
-                    </div>
-                  </div>
+                          <Transition
+                              show={open}
+                              as={Fragment}
+                              leave="transition ease-in duration-100"
+                              leaveFrom="opacity-100"
+                              leaveTo="opacity-0"
+                          >
+                            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                              {formattedAddresses.map((person) => (
+                                  <Listbox.Option
+                                      key={person.id}
+                                      className={({ active }) =>
+                                          classNames(
+                                              active ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                                              'relative cursor-default select-none py-2 pl-3 pr-9'
+                                          )
+                                      }
+                                      value={person}
+                                  >
+                                    {({ selected, active }) => (
+                                        <>
+                        <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                          {person}
+                        </span>
 
-                  <div>
-                    <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                      City
-                    </label>
-                    <div className="mt-1">
-                      <input
-                          type="text"
-                          id="city"
-                          name="city"
-                          autoComplete="address-level2"
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="region" className="block text-sm font-medium text-gray-700">
-                      State / Province
-                    </label>
-                    <div className="mt-1">
-                      <input
-                          type="text"
-                          id="region"
-                          name="region"
-                          autoComplete="address-level1"
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="postal-code" className="block text-sm font-medium text-gray-700">
-                      Postal code
-                    </label>
-                    <div className="mt-1">
-                      <input
-                          type="text"
-                          id="postal-code"
-                          name="postal-code"
-                          autoComplete="postal-code"
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
-                    </div>
-                  </div>
-                </div>
+                                          {selected ? (
+                                              <span
+                                                  className={classNames(
+                                                      active ? 'text-white' : 'text-indigo-600',
+                                                      'absolute inset-y-0 right-0 flex items-center pr-4'
+                                                  )}
+                                              >
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                                          ) : null}
+                                        </>
+                                    )}
+                                  </Listbox.Option>
+                              ))}
+                            </Listbox.Options>
+                          </Transition>
+                        </div>
+                      </>
+                  )}
+                </Listbox>
               </section>
 
               <section aria-labelledby="billing-heading" className="mt-10">
                 <h2 id="billing-heading" className="text-lg font-medium text-gray-900">
                   Billing information
                 </h2>
-
                 <div className="mt-6 flex items-center">
                   <input
                       id="same-as-shipping"
@@ -336,21 +387,20 @@ export default function Payment() {
                   />
                   <div className="ml-2">
                     <label htmlFor="same-as-shipping" className="text-sm font-medium text-gray-900">
-                      Same as shipping information
+                      Identique aux informations d'expédition
                     </label>
                   </div>
                 </div>
               </section>
-
               <div className="mt-10 border-t border-gray-200 pt-6 sm:flex sm:items-center sm:justify-between">
                 <button
                     type="submit"
                     className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:order-last sm:ml-6 sm:w-auto"
                 >
-                  Continue
+                  Continuer
                 </button>
                 <p className="mt-4 text-center text-sm text-gray-500 sm:mt-0 sm:text-left">
-                  You won't be charged until the next step.
+                  Vous ne serez facturé qu’à l’étape suivante.
                 </p>
               </div>
             </div>

@@ -40,4 +40,17 @@ export const ToastInfo = (mess ) =>{
     })
 };
 
+export const DisplayApiErrors = (errors) => {
+    for (const key in errors ) {
+        if (errors.hasOwnProperty(key)) {
+            const errorMessages = errors[key];
+            if (Array.isArray(errorMessages)) {
+                errorMessages.forEach((errorMessage) => {
+                    ToastError(errorMessage);
+                });
+            }
+        }
+    }
+};
+
 

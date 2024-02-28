@@ -1,20 +1,28 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import Cookies from 'universal-cookie';
 import {
   BrowserRouter,
   Route,
   Routes,
-  useLocation,
 } from 'react-router-dom';
-import { auth_routes, user_routes} from './UnProtectedRoutes';
+import {
+  admin_routes,
+  auth_routes,
+  user_routes,
+} from './UnProtectedRoutes';
 import RequireAuth from './RequireAuth';
 import {ToastContainer} from 'react-toastify';
 import FooterChooser from '../components/footer/FooterChooser';
 import NavBarChooser from '../components/navBar/NavBarChooser';
 
 const AppRoutes = () => {
-  const protectedRoutes = [...user_routes, ...auth_routes];
+  const cookies = new Cookies();
+  const protectedRoutes = [...user_routes, ...auth_routes,...admin_routes];
   const [currentUserRole, setCurrentUserRole] = useState(null);
-  const [token, setToken2] = useState(null);
+  const [token, setToken] = useState(null);
+  useEffect(() => {
+    setToken(cookies.get('token'));
+  }, [cookies.get('token')]);
 
   const handleSignOut = () => {
     setCurrentUserRole(undefined);
@@ -45,7 +53,7 @@ const AppRoutes = () => {
                       path={e.path}
                       element={
                         <RequireAuth
-                            userroles={e?.availability}
+                            userRoles={e?.availability}
                             setCurrentUserRole={setCurrentUserRole}
                         >
                           {e.ele}

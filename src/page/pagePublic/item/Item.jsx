@@ -1,52 +1,59 @@
-import React, { Fragment, useState } from 'react'
-import { Dialog, Disclosure, Transition } from '@headlessui/react'
+import React, {Fragment, useEffect, useState} from 'react';
+import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, PlusIcon } from '@heroicons/react/20/solid'
+import { PlusIcon } from '@heroicons/react/20/solid'
+import SkeletonItem from '../../../components/skeletons/SkeletonItem';
+import ListItem from './ListItem';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchMaterial} from '../../../redux/material/materialAction';
+import {fetchCategory} from '../../../redux/category/categoryAction';
+import {fetchColor} from '../../../redux/color/colorAction';
+import {filteredItems} from '../../../redux/item/itemAction';
 
-const filters = [
-  {
-    id: 'color',
-    name: 'Color',
-    options: [
-      { value: 'white', label: 'White' },
-      { value: 'beige', label: 'Beige' },
-      { value: 'blue', label: 'Blue' },
-      { value: 'brown', label: 'Brown' },
-      { value: 'green', label: 'Green' },
-      { value: 'purple', label: 'Purple' },
-    ],
-  },
-  {
-    id: 'category',
-    name: 'Category',
-    options: [
-      { value: 'new-arrivals', label: 'All New Arrivals' },
-      { value: 'tees', label: 'Tees' },
-      { value: 'crewnecks', label: 'Crewnecks' },
-      { value: 'sweatshirts', label: 'Sweatshirts' },
-      { value: 'pants-shorts', label: 'Pants & Shorts' },
-    ],
-  },
-  {
-    id: 'sizes',
-    name: 'Sizes',
-    options: [
-      { value: 'xs', label: 'XS' },
-      { value: 's', label: 'S' },
-      { value: 'm', label: 'M' },
-      { value: 'l', label: 'L' },
-      { value: 'xl', label: 'XL' },
-      { value: '2xl', label: '2XL' },
-    ],
-  },
-]
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-export default function Example() {
+export default function Item() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+  let [errorMessage , setErrorMessage] = useState(false);
+  let category = useSelector(state => state.category);
+  let material = useSelector(state => state.material);
+  let color = useSelector(state => state.color);
+  const dispatch = useDispatch();
+  let listItemFiltered = useSelector(state => state.item.itemFiltered)
+
+  const [selectedFilters, setSelectedFilters] = useState({
+    colors: [""],
+    categories: [""],
+    materials: [""]
+  });
+  useEffect(() => {
+    dispatch(fetchMaterial());
+    dispatch(fetchCategory());
+    dispatch(fetchColor());
+  }, [])
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(selectedFilters)
+    dispatch(filteredItems(selectedFilters));
+  }
+
+  const handleCheckboxChange = (filterType, value) => {
+    setSelectedFilters(prevFilters => ({
+      ...prevFilters,
+      [filterType]: prevFilters[filterType].includes(value)
+          ? prevFilters[filterType].filter(item => item !== value)
+          : [...prevFilters[filterType], value]
+    }));
+  }
+
+
+  if (errorMessage) {
+    return (
+        <div >
+          <SkeletonItem/>
+        </div>
+    )
+  }
+
 
   return (
       <div className="bg-white">
@@ -92,49 +99,75 @@ export default function Example() {
                         <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                       </button>
                     </div>
-
-                    {/* Filters */}
-                    <form className="mt-4">
-                      {filters.map((section) => (
-                          <Disclosure as="div" key={section.name} className="border-t border-gray-200 pb-4 pt-4">
-                            {({ open }) => (
-                                <fieldset>
-                                  <legend className="w-full px-2">
-                                    <Disclosure.Button className="flex w-full items-center justify-between p-2 text-gray-400 hover:text-gray-500">
-                                      <span className="text-sm font-medium text-gray-900">{section.name}</span>
-                                      <span className="ml-6 flex h-7 items-center">
-                                  <ChevronDownIcon
-                                      className={classNames(open ? '-rotate-180' : 'rotate-0', 'h-5 w-5 transform')}
-                                      aria-hidden="true"
+                    <form  className="ml-5 space-y-10 divide-y divide-gray-200">
+                      <div className="pt-10">
+                        <fieldset>
+                          <legend className="block text-sm font-medium text-gray-900">Couleur</legend>
+                          <div className="space-y-3 pt-6">
+                            {color.color.map(color => (
+                                <div key={color.id} className="flex items-center">
+                                  <input
+                                      id={`color-${color.id}`}
+                                      name="colors[]"
+                                      value={color.id}
+                                      type="checkbox"
+                                      onChange={() => handleCheckboxChange('colors', color.label)}
+                                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                   />
-                                </span>
-                                    </Disclosure.Button>
-                                  </legend>
-                                  <Disclosure.Panel className="px-4 pb-2 pt-4">
-                                    <div className="space-y-6">
-                                      {section.options.map((option, optionIdx) => (
-                                          <div key={option.value} className="flex items-center">
-                                            <input
-                                                id={`${section.id}-${optionIdx}-mobile`}
-                                                name={`${section.id}[]`}
-                                                defaultValue={option.value}
-                                                type="checkbox"
-                                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                            />
-                                            <label
-                                                htmlFor={`${section.id}-${optionIdx}-mobile`}
-                                                className="ml-3 text-sm text-gray-500"
-                                            >
-                                              {option.label}
-                                            </label>
-                                          </div>
-                                      ))}
-                                    </div>
-                                  </Disclosure.Panel>
-                                </fieldset>
-                            )}
-                          </Disclosure>
-                      ))}
+                                  <label htmlFor={`color-${color.id}`} className="ml-3 text-sm text-gray-600">
+                                    {color.label}
+                                  </label>
+                                </div>
+                            ))}
+                          </div>
+                        </fieldset>
+                      </div>
+
+                      <div className="pt-10">
+                        <fieldset>
+                          <legend className="block text-sm font-medium text-gray-900">Catégorie</legend>
+                          <div className="space-y-3 pt-6">
+                            {category.category.map(category => (
+                                <div key={category.id} className="flex items-center">
+                                  <input
+                                      id={`category-${category.id}`}
+                                      name="categories[]"
+                                      value={category.id}
+                                      type="checkbox"
+                                      onChange={() => handleCheckboxChange('categories', category.label)}
+                                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                  />
+                                  <label htmlFor={`category-${category.id}`} className="ml-3 text-sm text-gray-600">
+                                    {category.label}
+                                  </label>
+                                </div>
+                            ))}
+                          </div>
+                        </fieldset>
+                      </div>
+                      <div className="pt-10">
+                        <fieldset>
+                          <legend className="block text-sm font-medium text-gray-900">Matériau</legend>
+                          <div className="space-y-3 pt-6">
+                            {material.material.map(material => (
+                                <div key={material.id} className="flex items-center">
+                                  <input
+                                      id={`material-${material.id}`}
+                                      name="materials[]"
+                                      value={material.id}
+                                      type="checkbox"
+                                      onChange={() => handleCheckboxChange('materials', material.label)}
+                                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                  />
+                                  <label htmlFor={`material-${material.id}`} className="ml-3 text-sm text-gray-600">
+                                    {material.label}
+                                  </label>
+                                </div>
+                            ))}
+                          </div>
+                        </fieldset>
+                      </div>
+                      <button onClick={handleSubmit} className="bg-gray-950 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded">Appliquer des filtres</button>
                     </form>
                   </Dialog.Panel>
                 </Transition.Child>
@@ -144,9 +177,9 @@ export default function Example() {
 
           <main className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
             <div className="border-b border-gray-200 pb-10">
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900">New Arrivals</h1>
+              <h1 className="text-4xl font-bold tracking-tight text-gray-900">Nouvelles Arrivées</h1>
               <p className="mt-4 text-base text-gray-500">
-                Checkout out the latest release of Basic Tees, new and improved with four openings!
+                Découvrez la dernière version de Basic Tees, nouvelle et améliorée avec quatre ouvertures !
               </p>
             </div>
 
@@ -164,36 +197,84 @@ export default function Example() {
                 </button>
 
                 <div className="hidden lg:block">
-                  <form className="space-y-10 divide-y divide-gray-200">
-                    {filters.map((section, sectionIdx) => (
-                        <div key={section.name} className={sectionIdx === 0 ? null : 'pt-10'}>
-                          <fieldset>
-                            <legend className="block text-sm font-medium text-gray-900">{section.name}</legend>
-                            <div className="space-y-3 pt-6">
-                              {section.options.map((option, optionIdx) => (
-                                  <div key={option.value} className="flex items-center">
-                                    <input
-                                        id={`${section.id}-${optionIdx}`}
-                                        name={`${section.id}[]`}
-                                        defaultValue={option.value}
-                                        type="checkbox"
-                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                    />
-                                    <label htmlFor={`${section.id}-${optionIdx}`} className="ml-3 text-sm text-gray-600">
-                                      {option.label}
-                                    </label>
-                                  </div>
-                              ))}
-                            </div>
-                          </fieldset>
+                  <form  className="ml-5 space-y-10 divide-y divide-gray-200">
+                    <div className="pt-10">
+                      <fieldset>
+                        <legend className="block text-sm font-medium text-gray-900">Couleur</legend>
+                        <div className="space-y-3 pt-6">
+                          {color.color.map(color => (
+                              <div key={color.id} className="flex items-center">
+                                <input
+                                    id={`color-${color.id}`}
+                                    name="colors[]"
+                                    value={color.id}
+                                    type="checkbox"
+                                    onChange={() => handleCheckboxChange('colors', color.label)}
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <label htmlFor={`color-${color.id}`} className="ml-3 text-sm text-gray-600">
+                                  {color.label}
+                                </label>
+                              </div>
+                          ))}
                         </div>
-                    ))}
+                      </fieldset>
+                    </div>
+
+                    <div className="pt-10">
+                      <fieldset>
+                        <legend className="block text-sm font-medium text-gray-900">Catégorie</legend>
+                        <div className="space-y-3 pt-6">
+                          {category.category.map(category => (
+                              <div key={category.id} className="flex items-center">
+                                <input
+                                    id={`category-${category.id}`}
+                                    name="categories[]"
+                                    value={category.id}
+                                    type="checkbox"
+                                    onChange={() => handleCheckboxChange('categories', category.label)}
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <label htmlFor={`category-${category.id}`} className="ml-3 text-sm text-gray-600">
+                                  {category.label}
+                                </label>
+                              </div>
+                          ))}
+                        </div>
+                      </fieldset>
+                    </div>
+
+                    {/* Afficher les options de filtrage pour le matériau */}
+                    <div className="pt-10">
+                      <fieldset>
+                        <legend className="block text-sm font-medium text-gray-900">Matériau</legend>
+                        <div className="space-y-3 pt-6">
+                          {material.material.map(material => (
+                              <div key={material.id} className="flex items-center">
+                                <input
+                                    id={`material-${material.id}`}
+                                    name="materials[]"
+                                    value={material.id}
+                                    type="checkbox"
+                                    onChange={() => handleCheckboxChange('materials', material.label)}
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <label htmlFor={`material-${material.id}`} className="ml-3 text-sm text-gray-600">
+                                  {material.label}
+                                </label>
+                              </div>
+                          ))}
+                        </div>
+                      </fieldset>
+                    </div>
+                    <button onClick={handleSubmit} className="bg-gray-950 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded">Appliquer des filtres</button>
                   </form>
                 </div>
-              </aside>
 
-              {/* Product grid */}
-              <div className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-3">{/* Your content */}</div>
+              </aside>
+              <div className="mt-6 lg:col-span-2 lg:mt-0 xl:col-span-3">
+                  <ListItem list={listItemFiltered} />
+              </div>
             </div>
           </main>
         </div>

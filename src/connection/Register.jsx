@@ -1,12 +1,15 @@
 import React, { useState} from 'react';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import  "../page/pagePublic/pagePublic.css";
-import { RegisterService} from "../service/ServiceConnection";
-import {ToastError, ToastSuccess} from "../components/poPup/Toast";
+import {
+    DisplayApiErrors,
+    ToastError,
+    ToastSuccess,
+} from '../components/poPup/Toast';
 import {Link, useNavigate} from 'react-router-dom';
-import {setCookie} from "../service/useAuth";
 import {BsArrowLeft} from 'react-icons/bs';
+import {setCookie} from '../service/TokenService';
+import {RegisterService} from '../service/ConnectionService';
 
 const Register= () => {
     const [firstName,setFirstName] = useState("");
@@ -15,19 +18,6 @@ const Register= () => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    const displayApiErrors = (errors) => {
-        for (const key in errors ) {
-            if (errors.hasOwnProperty(key)) {
-                let errorMessages;
-                errorMessages = errors[key];
-                if (Array.isArray(errorMessages)) {
-                    errorMessages.forEach((errorMessage) => {
-                        ToastError(errorMessage);
-                    });
-                }
-            }
-        }
-    };
     const handleRegister = async (event ) =>{
         event.preventDefault();
         try {
@@ -36,11 +26,11 @@ const Register= () => {
 
                     ToastSuccess(response.data.message);
                 let token =  response.data.result
-                setCookie("token", token,7);
+                setCookie("token", token);
                 navigate(`/public/home`,{replace: true});
             }else if (response.response.status === 400){
                ToastError(response.response.data.message);
-               displayApiErrors(response.response.data.errors);
+               DisplayApiErrors(response.response.data.errors);
            }
         } catch (error) {
             console.error(error);
@@ -48,7 +38,7 @@ const Register= () => {
         }
     }
     const backgroundStyle = {
-        backgroundImage: `url("/img/imgConnection.jpg")`,
+        backgroundImage: `url("/img/imgPage/imgConnection.jpg")`,
     };
     return (
     <div>
