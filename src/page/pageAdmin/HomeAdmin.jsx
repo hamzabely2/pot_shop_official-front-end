@@ -7,10 +7,7 @@ import {
   UsersIcon,
 } from '@heroicons/react/24/outline';
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import {
-  Route,
-  Routes, Link, useNavigate,
-} from 'react-router-dom';
+import {Link, useNavigate,} from 'react-router-dom';
 import { GiPaintedPottery } from "react-icons/gi";
 import { GrDeliver } from "react-icons/gr";
 import Cookies from 'universal-cookie';
@@ -64,7 +61,7 @@ export default function HomeAdmin({handleSignOut }) {
     category : <CategoryAdmin/>,
     material : <MaterialAdmin/>,
     itemUpdated : <ItemUpdate item={itemId} setCurrentComponent={setCurrentComponent}/>,
-    createItem : <CreateItem />
+    createItem : <CreateItem setCurrentComponent={setCurrentComponent} />
 
   };
 

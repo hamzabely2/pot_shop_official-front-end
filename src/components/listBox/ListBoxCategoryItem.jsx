@@ -1,7 +1,7 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import InfoEmpty from '../skeletons/InfoEmpty';
 
 function classNames(...classes) {
@@ -10,7 +10,6 @@ function classNames(...classes) {
 
 export default function ListBoxCategoryItem({onSelect}) {
   let categories = useSelector(state => state.category.category);
-  console.log(categories)
   const [selected, setSelected] = useState(categories[0]);
 
 

@@ -2,7 +2,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import {Roles} from '../../Route/UnProtectedRoutes';
+import {Roles} from '../../Route/Routes';
 import Cart from '../../page/pageUser/Cart';
 import HomeAdmin from '../../page/pageAdmin/HomeAdmin';
 import Cookies from 'universal-cookie';
@@ -23,11 +23,12 @@ const navigationConnexion = [
     { name: 'Registration', to: '/public/register', current: false },
 ];
 
-export default function NavBar({currentUserRole,handleSignOut, token}) {
+export default function NavBar({currentUserRole,handleSignOut}) {
     const [isCartOpen, setIsCartOpen] = useState(false);
     let [isConnected, setIsConnected] = useState(false);
     let user = useSelector(state => state.user.user);
     const dispatch = useDispatch();
+    currentUserRole = currentUserRole ? currentUserRole : "Visiteur"
 
         useEffect(() => {
         dispatch((getUser()))
@@ -58,7 +59,7 @@ export default function NavBar({currentUserRole,handleSignOut, token}) {
     };
 
     return (
-        currentUserRole === Roles.user || currentUserRole === Roles.visitor ||  currentUserRole == null ?
+        currentUserRole === Roles.user || currentUserRole === Roles.visitor ||  currentUserRole === null || currentUserRole === undefined ?
             <Disclosure as="nav" className="">
                 {({ open }) => (
                     <>
@@ -127,7 +128,6 @@ export default function NavBar({currentUserRole,handleSignOut, token}) {
                                                     isOpen={isCartOpen}
                                                     openModal={openCart}
                                                     closeModal={closeCart}
-                                                    token={token}
                                                 />
                                                 <Menu as="div" className="relative ml-3">
                                                     <div>
@@ -136,7 +136,7 @@ export default function NavBar({currentUserRole,handleSignOut, token}) {
                                                             <span className="sr-only">Open user menu</span>
                                                             <img
                                                                 className="h-10 w-10 rounded-full"
-                                                                src={imageUrls[user.imageId]}
+                                                                src={imageUrls[user.imageId ? user.imageId : 0]}
                                                                 alt=""
                                                             />
                                                         </Menu.Button>

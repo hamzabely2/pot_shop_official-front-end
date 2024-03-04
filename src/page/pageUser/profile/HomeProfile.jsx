@@ -13,9 +13,6 @@ import UserProfile from './UserProfile';
 import {useDispatch, useSelector} from 'react-redux';
 import { getUser} from '../../../redux/user/userAction';
 
-
-
-
 const navigation = [
   { name: 'Profile', to: 'user', icon: UserCircleIcon },
   { name: 'Adresse', to: 'address', icon: FaRegAddressCard },

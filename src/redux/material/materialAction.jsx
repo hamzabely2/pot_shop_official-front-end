@@ -13,3 +13,15 @@ export const fetchMaterial = createAsyncThunk(
     }
 );
 
+export const createMaterial = createAsyncThunk(
+    'material/create',
+    async ({  payload },thunkAPI) => {
+      try {
+        const response = await ServiceGeneric.postWithToken("material/create", payload);
+        return response.data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error);
+      }
+    }
+);
+

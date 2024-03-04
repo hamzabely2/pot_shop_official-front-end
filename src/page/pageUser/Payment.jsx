@@ -43,21 +43,9 @@ export default function Payment() {
             console.error('Erreur de requête :', error);
           });
     }
-  }, [token,cart]);
+  }, []);
 
-  useEffect(() => {
-    if(token) {
-      UserService.GetAdressUser(token)
-          .then(data => {
-            setAdresses(data.data.result);
-          })
-          .catch(error => {
-            ToastError(error)
-            setErrorMessage(true)
-            console.error('Erreur de requête :', error);
-          });
-    }
-  }, [token,adresses])
+
 
   const formattedAddresses = adresses.map(address => {
     return `${address.id} ${address.city} ${address.state} ${address.street} ${address.code}`;

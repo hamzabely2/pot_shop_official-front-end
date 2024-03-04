@@ -47,11 +47,16 @@ const  userSlice = createSlice({
       state.isLoading = true;
     })
     builder.addCase(updateUser.fulfilled, (state, action) => {
-      console.log(action)
+      const updatedUser = action.payload.result;
       state.isLoading = false;
+      state.users = state.users.map(user => {
+        if (user.id === updatedUser.id) {
+          return updatedUser;
+        }
+        return user;
+      });
       state.user = action.payload.result;
       ToastSuccess(action.payload.message);
-
     })
     builder.addCase(updateUser.rejected, (state, action) => {
       state.isError = true;

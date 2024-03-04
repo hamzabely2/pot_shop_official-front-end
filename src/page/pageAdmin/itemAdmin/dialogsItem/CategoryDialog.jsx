@@ -1,20 +1,40 @@
-import {Fragment, useRef, useState} from 'react';
+import {Fragment, useEffect, useRef, useState} from 'react';
 import { Dialog, Transition } from '@headlessui/react'
-import {useDispatch} from 'react-redux';
-import {addImageByItem} from '../../../../redux/item/itemAction';
-import {PhotoIcon} from '@heroicons/react/24/solid';
+import Cookies from 'universal-cookie';
+import ListBoxColorsItem
+  from '../../../../components/listBox/ListBoxColorsItem';
+import {
+  fetchColor,
+} from '../../../../redux/color/colorAction';
+import {useDispatch, useSelector} from 'react-redux';
+import {addColorByItem} from '../../../../redux/item/itemAction';
 
-export default function ImageItemDialog({ isOpen, closeModal,itemId}) {
+export default function CategoryDialog({ isOpen, closeModal,itemId}) {
   const dispatch = useDispatch();
+  const cookies = new Cookies();
   const [open, setOpen] = useState(false)
   const cancelButtonRef = useRef(null)
+  const [selectedColor, setSelectedColor] = useState();
+  let colors = useSelector(state => state.color.color);
+  let error = useSelector(state => state.color.isError);
   let [payload , setPayload] = useState({
     ItemId : itemId,
-    ImageData : "",
-  });
+    ColorId : 1,
+  })
 
-  const AddImageByItem = () => {
-    dispatch(addImageByItem({payload : payload }))
+  useEffect(() => {
+    dispatch(fetchColor(cookies.get('token')))
+  }, [])
+
+  const handleSelectionChange = (selectedColor) => {
+    setSelectedColor(selectedColor);
+    console.log(selectedColor)
+    setPayload({...payload,ColorId : selectedColor.id });
+
+  };
+  const AddColoByItem = () => {
+    console.log(payload)
+    dispatch(addColorByItem({ token: cookies.get('token'),payload : payload }))
         .then((result) => {
           if(!result.error) {
             closeModal()
@@ -22,10 +42,6 @@ export default function ImageItemDialog({ isOpen, closeModal,itemId}) {
         });
   }
 
-  const handleFileChange = (event) => {
-    payload.ImageData = event.target.files[0];
-
-  };
   return (
       <Transition.Root show={isOpen} as={Fragment} >
         <Dialog as="div" className="relative z-10 " initialFocus={cancelButtonRef} onClose={setOpen}>
@@ -52,29 +68,15 @@ export default function ImageItemDialog({ isOpen, closeModal,itemId}) {
                   leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                   leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
-                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                <Dialog.Panel className="relative  transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
 
+                  <ListBoxColorsItem colors={colors}  onSelect={handleSelectionChange} />
 
-                  <div className="flex justify-center rounded-lg border border-dashed border-white/25 px-6 py-10">
-                    <div className="text-center">
-                      <PhotoIcon className="mx-auto h-5 w-12 text-gray-500" aria-hidden="true" />
-                      <div className=" flex text-sm leading-6 text-gray-400">
-                        <label htmlFor="file-upload" className="relative cursor-pointer rounded-md text-gray-950 font-semibold  focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 hover:text-gray-500">
-                          <span>Upload a file</span>
-                          <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} />
-                        </label>
-                        <p className="pl-1">ou glisser-déposer</p>
-                      </div>
-                      <p className="text-xs leading-5 text-gray-400">PNG, JPG, GIF up to 10MB</p>
-                    </div>
-                  </div>
-
-
-                  <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                  <div className=" sm:mt-60 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                     <button
                         type="button"
                         className="inline-flex w-full justify-center rounded-md bg-gray-950 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                        onClick={() => AddImageByItem()}
+                        onClick={() => AddColoByItem()}
                     >
                       Confirme
                     </button>

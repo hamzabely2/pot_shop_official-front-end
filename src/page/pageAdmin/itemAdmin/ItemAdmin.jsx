@@ -1,24 +1,22 @@
 import AlertApi from '../../../components/skeletons/AlertApi';
-import React, {useEffect, useState} from 'react';
-import {MdDelete, MdEdit} from 'react-icons/md';
-import Cookies from 'universal-cookie';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {deleteItem, fetchItem} from '../../../redux/item/itemAction';
+import { fetchItem} from '../../../redux/item/itemAction';
 import {fetchMaterial} from '../../../redux/material/materialAction';
 import {fetchCategory} from '../../../redux/category/categoryAction';
 import {fetchColor} from '../../../redux/color/colorAction';
+import InfoEmpty from '../../../components/skeletons/InfoEmpty';
 
 export default function ItemAdmin({setCurrentComponent, setItemId }) {
-  const cookies = new Cookies();
   const dispatch = useDispatch();
   const item = useSelector(state => state.item.data);
   let error = useSelector(state => state.item.isError);
 
   useEffect(() => {
     dispatch(fetchItem());
-    dispatch(fetchMaterial(cookies.get('token')));
-    dispatch(fetchCategory(cookies.get('token')));
-    dispatch(fetchColor(cookies.get('token')));
+    dispatch(fetchMaterial());
+    dispatch(fetchCategory());
+    dispatch(fetchColor());
   }, [])
 
 
@@ -27,9 +25,6 @@ export default function ItemAdmin({setCurrentComponent, setItemId }) {
         <AlertApi/>
     )
   }
-  const DeleteItem = (itemId) => {
-    dispatch(deleteItem({ token: cookies.get('token'), id : itemId }))
-  };
 
   const DetailsItem = (item) => {
     setCurrentComponent("itemUpdated")
@@ -42,7 +37,6 @@ export default function ItemAdmin({setCurrentComponent, setItemId }) {
 
   return (
       <div className="py-10">
-
         <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
           <div className="sm:flex-auto">
             <h1 className="text-base font-semibold leading-6 text-gray-900">Liste articles</h1>
@@ -88,14 +82,15 @@ export default function ItemAdmin({setCurrentComponent, setItemId }) {
                   </th>
                 </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 " >
-                {item.map((item) => (
-                      <tr key={item.id}  onClick={() => DetailsItem(item)} className="text-red-700 hover:bg-gray-50">
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0 ">
+
+                    <tbody className="divide-y divide-gray-200 " >
+                {item.length > 0 ? item.map((item) => (
+                      <tr key={item.id} onClick={() => DetailsItem(item)}  className="text-red-700 hover:bg-gray-50  ">
+                      <td className="whitespace-nowrap flex justify-center py-4 pl-4 h-24 w-20 text-sm font-medium text-gray-900 sm:pl-0 ">
                         <img
-                            src={item.images && item.images.length > 0 ? `data:image/jpeg;base64,${item.images[0]}` : '/placeholder.jpg'}
+                            src={ item.images.length > 0 ? `data:image/jpeg;base64,${item.images[0].imageData}` : '/placeholder.jpg'}
                             alt={item.name}
-                            className="h-full w-20 object-cover object-center group-hover:opacity-75"
+                            className="h-full  object-cover object-center group-hover:opacity-75"
                         />
                       </td>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
@@ -103,22 +98,21 @@ export default function ItemAdmin({setCurrentComponent, setItemId }) {
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.description}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.price}</td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500" style={{ display: 'flex', alignItems: 'center' }}>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        <div className="flex">
                         {item.stock === 0 ? (
-                            <div style={{marginBottom : "1px", width: '15px', height: '15px', borderRadius: '50%', backgroundColor: 'red'}}></div>
+                            <div style={{ width: '15px', height: '15px', borderRadius: '50%', backgroundColor: 'red'}}></div>
                         ) : (
-                            <div style={{marginBottom :"1px", width: '15px', height: '15px', borderRadius: '50%', backgroundColor: 'green' }}></div>
+                            <div style={{ width: '15px', height: '15px', borderRadius: '50%', backgroundColor: 'green' }}></div>
                         )}
-                        <span style={{ marginLeft: '5px' }}>{item.stock}</span>
+                        <spa className="ml-2" >{item.stock}</spa>
+                        </div>
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.createdDate}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                        <button className="m-1" style={{ fontSize: '20px' }}>
-                        <MdDelete  onClick={() => DeleteItem(item.id)} className="text-red-700" />
-                      </button>
                       </td>
                       </tr>
-                ))}
+                )): <InfoEmpty className="" message="Aucune articles trouve" />}
                 </tbody>
               </table>
             </div>

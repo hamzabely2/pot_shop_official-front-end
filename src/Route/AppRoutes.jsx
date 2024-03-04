@@ -9,7 +9,7 @@ import {
   admin_routes,
   auth_routes,
   user_routes,
-} from './UnProtectedRoutes';
+} from './Routes';
 import RequireAuth from './RequireAuth';
 import {ToastContainer} from 'react-toastify';
 import FooterChooser from '../components/footer/FooterChooser';

@@ -5,17 +5,26 @@ import { StarIcon} from '@heroicons/react/20/solid';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchItem} from '../../../redux/item/itemAction';
 import AlertApi from '../../../components/skeletons/AlertApi';
+import InfoEmpty from '../../../components/skeletons/InfoEmpty';
 
 export default function ListItem ({ maxItemsToShow,list } ) {
   const dispatch = useDispatch();
   let item = useSelector(state => state.item.data);
   let error = useSelector(state => state.item.isError);
   item = list ? list : item
+  let isLoading = useSelector(state => state.item.isLoading);
 
   useEffect(() => {
     dispatch((fetchItem()))
   }, [])
 
+  if(isLoading){
+    return (
+        <div className="flex justify-center m-3">
+           <img className="w-20" src="/video/Chunk-4s-200px.gif"/>
+        </div>
+    )
+  }
 
   if (error) {
     return (
@@ -27,13 +36,14 @@ export default function ListItem ({ maxItemsToShow,list } ) {
   }
   return (
       <div className="bg-white">
-        <div className="mx-auto max-w-[1500px] overflow-hidden sm:px-6 lg:px-8">
-          <div className="-mx-px grid grid-cols-2   sm:mx-0 md:grid-cols-3 lg:grid-cols-5">
+        {item.length > 0 ?
+        <div className="mx-auto max-w-[1500px]  overflow-hidden sm:px-6 lg:px-8">
+          <div className=" grid grid-cols-2 sm:mx-0 md:grid-cols-3 lg:grid-cols-5">
             {item.map((item) => (
-                <Link  to={`/public/item/details/${item.id}`} state={{item :item}}  key={item.id} className="group relative    p-4 sm:p-6">
-                  <div className="aspect-h-1 flex justify-center overflow-hidden rounded-lg  group-hover:opacity-75">
+                <Link  to={`/public/item/details/${item.id}`} state={{item :item}}  key={item.id} className="group relative hover:m-1 item-center sm:p-6">
+                  <div className="aspect-h-1  flex justify-center overflow-hidden rounded-lg  group-hover:opacity-75">
                     <img
-                        src={item.images && item.images.length > 0 ? `data:image/jpeg;base64,${item.images[0]}` : '/placeholder.jpg'}
+                        src={ item.images.length > 0 ? `data:image/jpeg;base64,${item.images[0].imageData}` : '/placeholder.jpg'}
                         alt={item.name}
                         className="h-48  object-cover object-center group-hover:opacity-75"
                     />
@@ -70,12 +80,13 @@ export default function ListItem ({ maxItemsToShow,list } ) {
                             </li>
                         ))}
                       </ul>                             </div>
-                    <p className="mt-4 text-base font-medium text-gray-900">{item.price}</p>
+                    <p className="mt-4 text-base font-medium text-gray-900">{item.price} €</p>
                   </div>
                 </Link>
             ))}
           </div>
         </div>
+         : <InfoEmpty className="flex justify-center m-5" message="Aucun article trouve" /> }
       </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useState} from 'react';
 import Cookies from 'universal-cookie';
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import ListBoxColorsItem from '../../../components/listBox/ListBoxColorsItem';
@@ -8,14 +8,16 @@ import ListBoxCategoryItem
   from '../../../components/listBox/ListBoxCategoryItem';
 import {useDispatch} from 'react-redux';
 import {createItem} from '../../../redux/item/itemAction';
+import {FaWeightHanging} from 'react-icons/fa';
+import {CiLineHeight} from 'react-icons/ci';
+import {AiOutlineColumnWidth} from 'react-icons/ai';
 
 
 
-export default function CreateItem() {
+export default function CreateItem({setCurrentComponent}) {
   const dispatch = useDispatch();
   const cookies = new Cookies();
   const [selectedColor, setSelectedColor] = useState();
-
   const [payload, setPayload] = useState({
     Name: "",
     CategoryId: 2,
@@ -24,7 +26,10 @@ export default function CreateItem() {
     Description : "",
     Price: "",
     ColorId :1 ,
-    ImagesData : ""
+    ImagesData : "",
+    Height : "",
+    Width : "",
+    Weight  : ""
   });
   const handleCategoryChange = (selectedCategory) => {
     setPayload({...payload,CategoryId : selectedCategory.id });
@@ -54,6 +59,19 @@ export default function CreateItem() {
 
   return (
       <div className="">
+        <div className="ml-3 flex h-7 items-center justify-end">
+          <button
+              onClick={() => setCurrentComponent("item")}
+              type="button"
+              className="relative bg-gray-950 -m-2 mt-5 p-2 text-white  rounded-full"
+          >
+            <span className="absolute -inset-0.5"></span>
+            <span className="sr-only"></span>
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
         <div className="mx-auto max-w-5xl px-6 py-16 sm:py-24 lg:px-8">
           <form onSubmit={handleSubmit} className=" grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
             <div>
@@ -106,7 +124,7 @@ export default function CreateItem() {
               </label>
               <div className="relative mt-2 rounded-md shadow-sm">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <span className="text-gray-500 sm:text-sm">$</span>
+                  <span className="text-gray-500 sm:text-sm">€</span>
                 </div>
                 <input
                     type="number"
@@ -119,7 +137,79 @@ export default function CreateItem() {
                 />
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                 <span className="text-gray-500 sm:text-sm" id="price-currency">
-                  USD
+                  EUR
+                </span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label htmlFor="price" className="block text-sm font-medium leading-6 text-gray-900">
+                Longueur
+              </label>
+              <div className="relative mt-2 rounded-md shadow-sm">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <span className="text-gray-500 sm:text-sm"><AiOutlineColumnWidth /></span>
+                </div>
+                <input
+                    type="text"
+                    name="price"
+                    id="price"
+                    className="block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder="0.00"
+                    onChange={(e) => setPayload({...payload, Height: e.target.value})}
+                    aria-describedby="price-currency"
+                />
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <span className="text-gray-500 sm:text-sm" id="price-currency">
+                  Cm
+                </span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label htmlFor="price" className="block text-sm font-medium leading-6 text-gray-900">
+                Largeur
+              </label>
+              <div className="relative mt-2 rounded-md shadow-sm">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <span className="text-gray-500 sm:text-sm"><CiLineHeight /></span>
+                </div>
+                <input
+                    type="text"
+                    name="price"
+                    id="price"
+                    className="block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder="0.00"
+                    onChange={(e) => setPayload({...payload, Width: e.target.value})}
+                    aria-describedby="price-currency"
+                />
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <span className="text-gray-500 sm:text-sm" id="price-currency">
+                  Cm
+                </span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label htmlFor="price" className="block text-sm font-medium leading-6 text-gray-900">
+                Poids
+              </label>
+              <div className="relative mt-2 rounded-md shadow-sm">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <span className="text-gray-500 sm:text-sm"><FaWeightHanging /></span>
+                </div>
+                <input
+                    type="text"
+                    name="price"
+                    id="price"
+                    className="block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder="0.00"
+                    onChange={(e) => setPayload({...payload, Weight: e.target.value})}
+                    aria-describedby="price-currency"
+                />
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <span className="text-gray-500 sm:text-sm" id="price-currency">
+                  Kg
                 </span>
                 </div>
               </div>
@@ -154,7 +244,7 @@ export default function CreateItem() {
                 <div className="text-center">
                   <PhotoIcon className="mx-auto h-5 w-12 text-gray-500" aria-hidden="true" />
                   <div className=" flex text-sm leading-6 text-gray-400">
-                    <label htmlFor="file-upload" className="relative cursor-pointer rounded-md text-gray-950 font-semibold  focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 hover:text-gray-500">
+                    <label htmlFor="file-upload" className="relative cursor-pointer rounded-md text-gray-950 font-semibold  focus-within:outline-none focus-within:ring-indigo-600 hover:text-gray-500">
                       <span>Upload a file</span>
                       <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} />
                     </label>

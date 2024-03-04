@@ -13,3 +13,15 @@ export const fetchCategory = createAsyncThunk(
     }
 );
 
+export const createCategory= createAsyncThunk(
+    'category/create',
+    async ({  payload },thunkAPI) => {
+      try {
+        const response = await ServiceGeneric.postWithToken("category/create", payload);
+        return response.data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error);
+      }
+    }
+);
+

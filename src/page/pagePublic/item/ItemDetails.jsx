@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, {useState} from 'react';
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { HeartIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline'
@@ -11,66 +11,21 @@ import {createCart} from '../../../redux/cart/cartAction';
 import {useDispatch} from 'react-redux';
 const cookies = new Cookies();
 
-const product = {
-  name: 'Zip Tote Basket',
-  price: '$140',
-  rating: 3,
-  images: [
-    {
-      id: 1,
-      name: 'Angled view',
-      src: 'https://tailwindui.com/img/ecommerce-images/product-page-03-product-01.jpg',
-      alt: 'Angled front view with bag zipped and handles upright.',
-    },
-    // More images...
-  ],
-  colors: [
-    { name: 'Washed Black', bgColor: 'bg-gray-700', selectedColor: 'ring-gray-700' },
-    { name: 'White', bgColor: 'bg-white', selectedColor: 'ring-gray-400' },
-    { name: 'Washed Gray', bgColor: 'bg-gray-500', selectedColor: 'ring-gray-500' },
-  ],
-  description: `
-    <p>The Zip Tote Basket is the perfect midpoint between shopping tote and comfy backpack. With convertible straps, you can hand carry, should sling, or backpack this convenient and spacious bag. The zip top and durable canvas construction keeps your goods protected for all-day use.</p>
-  `,
-  details: [
-    {
-      name: 'Features',
-      items: [
-        'Multiple strap configurations',
-        'Spacious interior with top zip',
-        'Leather handle and tabs',
-        'Interior dividers',
-        'Stainless strap loops',
-        'Double stitched construction',
-        'Water-resistant',
-      ],
-    },
-    {
-      name: 'Features',
-      items: [
-        'Multiple strap configurations',
-        'Spacious interior with top zip',
-        'Leather handle and tabs',
-        'Interior dividers',
-        'Stainless strap loops',
-        'Double stitched construction',
-        'Water-resistant',
-      ],
-    },
-    // More sections...
-  ],
-}
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function ItemDetails() {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0])
+  const [selectedColor, setSelectedColor] = useState()
   const [quantity, setQuantity] = useState(1)
   const location = useLocation();
   const { item } = location.state;
   const dispatch = useDispatch();
+  const options = [];
+  for (let i = 1; i <= 500; i++) {
+    options.push(<option key={i}>{i}</option>);
+  }
+
   const handleQuantityChange = (event) => {
     setQuantity(parseInt(event.target.value));
   };
@@ -98,13 +53,12 @@ export default function ItemDetails() {
                   {item.images.map((image, index) => (
                       <Tab
                           key={index}
-                          className="relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-950 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
+                          className="relative flex h-56 w-36  items-center justify-center rounded-md bg-white text-sm font-medium   focus:outline-none focus:ring  focus:ring-offset-4"
                       >
                         {({ selected }) => (
                             <>
-                              <span className="sr-only">{image.name}</span>
-                              <span className="absolute inset-0 overflow-hidden rounded-md">
-                          <img src={`data:image/jpeg;base64,${image}`} alt="" className="h-full w-full object-cover object-center" />
+                              <span className="absolute inset-0  rounded-md ">
+                          <img src={`data:image/jpeg;base64,${image.imageData}`} alt="" className=" h-full w-full object-cover object-center" />
                         </span>
                               <span
                                   className={classNames(
@@ -123,9 +77,9 @@ export default function ItemDetails() {
                 {item.images.map((image, index) => (
                     <Tab.Panel key={index}>
                       <img
-                          src={`data:image/jpeg;base64,${image}`}
+                          src={`data:image/jpeg;base64,${image.imageData}`}
                           alt={image.alt}
-                          className="h-full w-full object-cover object-center sm:rounded-lg"
+                          className=" h-96 object-cover object-center sm:rounded-lg"
                       />
                     </Tab.Panel>
                 ))}
@@ -140,32 +94,14 @@ export default function ItemDetails() {
               </div>
               <div className="mt-3">
                 <h3 className="sr-only">Reviews</h3>
-                <div className="flex items-center">
-                  <div className="flex items-center">
-                    {[0, 1, 2, 3, 4].map((rating) => (
-                        <StarIcon
-                            key={rating}
-                            className={classNames(
-                                product.rating > rating ? 'text-yellow-500' : 'text-gray-300',
-                                'h-5 w-5 flex-shrink-0'
-                            )}
-                            aria-hidden="true"
-                        />
-                    ))}
-                  </div>
-                  <p className="sr-only">{product.rating} out of 5 stars</p>
-                </div>
               </div>
-
               <div className="mt-6">
                 <h3 className="sr-only">Description</h3>
-
                 <div
                     className="space-y-6 text-base text-gray-700"
-                    dangerouslySetInnerHTML={{ __html: product.description }}
+                    dangerouslySetInnerHTML={{ __html: item.description }}
                 />
               </div>
-
               <form  className="mt-6">
                 <div>
                   <h3 className="text-sm text-gray-600">Couleur</h3>
@@ -211,16 +147,10 @@ export default function ItemDetails() {
                       name="location"
                       value={quantity}
                       onChange={handleQuantityChange}
-                      className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-gray-950 sm:text-sm sm:leading-6"
                   >
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
+                      {options}
+
                   </select>
                 </div>
 

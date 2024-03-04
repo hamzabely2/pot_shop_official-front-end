@@ -1,18 +1,18 @@
 import AlertApi from '../../../../components/skeletons/AlertApi';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import Cookies from 'universal-cookie';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchCategory} from '../../../../redux/category/categoryAction';
 export default function CategoryAdmin() {
   const dispatch = useDispatch();
-  const cookies = new Cookies();
-  let [errorMessage , setErrorMessage] = useState(false);
   let categories = useSelector(state => state.category.category);
   let error = useSelector(state => state.material.isError);
+  const CreateCategory = () =>{
+
+  }
 
   useEffect(()=> {
-   dispatch(fetchCategory(cookies.get('token')));
+   dispatch(fetchCategory());
   }, [])
 
   if (error) {
@@ -28,13 +28,13 @@ export default function CategoryAdmin() {
             <h1 className="text-base font-semibold leading-6 text-gray-900">List produits</h1>
           </div>
           <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-            <Link
-                to={"/admin/item/create"}
+            <button
+                onClick={CreateCategory}
                 type="button"
-                className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="block rounded-md bg-gray-950 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Ajouter un catégorie
-            </Link>
+            </button>
           </div>
         </div>
         <div className="mt-8 flow-root">

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useLocation } from "react-router-dom";
-import {Roles} from '../../Route/UnProtectedRoutes';
+import {Roles} from '../../Route/Routes';
 import Footer from './Footer';
 function FooterChooser({currentUserRole,handleSignOut,token }) {
 

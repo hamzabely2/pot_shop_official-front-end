@@ -33,7 +33,6 @@ export const fetchItem = createAsyncThunk(
 export const getItem = createAsyncThunk(
     'item/one',
     async (id,thunkAPI) => {
-      console.log(id)
       try {
         const response =  await ServiceGeneric.get(`item/${id}`);
         return response.data;
@@ -47,7 +46,6 @@ export const getItem = createAsyncThunk(
 export const createItem = createAsyncThunk(
     'item/create',
     async ({  payload },thunkAPI) => {
-      console.log(payload);
       try {
         const response = await ServiceGeneric.postWithTokenAndContentType("item/create", payload);
         return response.data;
@@ -58,6 +56,17 @@ export const createItem = createAsyncThunk(
 );
 
 
+export const updateItem = createAsyncThunk(
+    'item/update',
+    async (payload,thunkAPI) => {
+      try {
+        const response =  await ServiceGeneric.putWithToken(`item/update/${payload.id}`,payload);
+        return response.data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error);
+      }
+    }
+);
 
 export const deleteItem = createAsyncThunk(
     'item/delete',
@@ -83,6 +92,19 @@ export const addImageByItem = createAsyncThunk(
       }
     }
 );
+
+export const deleteImageByItem = createAsyncThunk(
+    'item/delete/image',
+    async ({payload },thunkAPI) => {
+      try {
+        const response = await ServiceGeneric.deleteWithToken("item/delete/image", payload);
+        return response.data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error);
+      }
+    }
+);
+
 
 
 export const addColorByItem = createAsyncThunk(

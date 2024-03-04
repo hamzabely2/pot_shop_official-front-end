@@ -1,47 +1,41 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { LuShoppingCart } from 'react-icons/lu';
-import Cookies from 'universal-cookie';
 import {Link} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-    createCart,
     deleteCart,
     fetchCart,
     updateCart,
 } from '../../redux/cart/cartAction';
-import {InformationCircleIcon} from '@heroicons/react/16/solid';
 import InfoEmpty from '../../components/skeletons/InfoEmpty';
 
 const Cart = ({  isOpen, openModal, closeModal}) => {
-    const cookies = new Cookies();
-    const [quantity, setQuantity] = useState()
     const dispatch = useDispatch();
     let cart = useSelector(state => state.cart.cart);
     let error = useSelector(state => state.cart.isError);
     const options = [];
-    for (let i = 1; i <= 50; i++) {
+    for (let i = 1; i <= 500; i++) {
         options.push(<option key={i}>{i}</option>);
     }
 
     useEffect(() => {
-        dispatch((fetchCart(cookies.get('token'))))
+        dispatch((fetchCart()))
     }, [])
 
 
    let total = 0;
     const HandleQuantityChange = (e,ItemId) => {
-        setQuantity(+e.target.value);
         EditQuantityItem(e,ItemId,+e.target.value)
     };
     const EditQuantityItem = (event,itemId,quantity) => {
         event.preventDefault();
         let payload = { ItemId: itemId, Quantity: quantity}
-        dispatch(updateCart({token: cookies.get('token'),payload : payload}))
+        dispatch(updateCart({payload : payload}))
     };
 
     const DeleteCart = (itemId) => {
-        dispatch(deleteCart({ token: cookies.get('token'), id : itemId }))
+        dispatch(deleteCart({ id : itemId }))
     };
 
     return (
