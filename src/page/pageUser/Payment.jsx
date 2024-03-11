@@ -5,8 +5,6 @@ import {
   ChevronUpDownIcon,
   ChevronUpIcon,
 } from '@heroicons/react/20/solid';
-import UserService from '../../service/UserService';
-import {ToastError} from '../../components/poPup/Toast';
 import Cookies from 'universal-cookie';
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -15,35 +13,10 @@ function classNames(...classes) {
 export default function Payment() {
   const cookies = new Cookies();
   const [cart, setCart] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(false);
-  const [token, setToken] = useState();
   const [total, setTotal] = useState(0)
   let [adresses , setAdresses] = useState([]);
 
 
-  useEffect(() => {
-    const tokenFromCookie = cookies.get('token');
-    if (tokenFromCookie) {
-      setToken(tokenFromCookie);
-    }
-  }, []);
-
-
-  useEffect(() => {
-    if (token) {
-      UserService.GetCartUser(token)
-          .then(data => {
-            setCart(data.data.result);
-            const totalAmount = data.data.result.reduce((acc, item) => acc + item.subtotal, 0);
-            setTotal(totalAmount);
-          })
-          .catch(error => {
-            ToastError(error)
-            setErrorMessage(true);
-            console.error('Erreur de requête :', error);
-          });
-    }
-  }, []);
 
 
 

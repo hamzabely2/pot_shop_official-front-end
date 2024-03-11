@@ -1,5 +1,4 @@
 import Cookies from 'universal-cookie';
-import {useEffect} from 'react';
 const cookies = new Cookies();
 
 

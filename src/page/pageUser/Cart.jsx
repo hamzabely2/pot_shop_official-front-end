@@ -77,7 +77,7 @@ const Cart = ({  isOpen, openModal, closeModal}) => {
                                                         <li key={item.items.id}  className="flex py-6">
                                                             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                                                 <img
-                                                                    src={item.items.images && item.items.images.length > 0 ? `data:image/jpeg;base64,${item.items.images[0]}` : '/placeholder.jpg'}
+                                                                    src={ item.items.images.length > 0 ? `data:image/jpeg;base64,${item.items.images[0].imageData}` : '/placeholder.jpg'}
                                                                     alt={item.items.name}
                                                                     className="h-full w-full object-cover object-center group-hover:opacity-75"
                                                                 />
