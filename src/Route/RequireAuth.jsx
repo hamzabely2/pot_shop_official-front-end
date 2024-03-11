@@ -1,25 +1,24 @@
 import { Navigate } from "react-router-dom"
 import { useLocation } from "react-router-dom";
-import {getRoleFromToken} from '../service/useAuth';
 import Cookies from 'universal-cookie';
-import {Roles} from './UnProtectedRoutes';
+import {Roles} from './Routes';
+import {getRoleFromToken} from '../service/TokenService';
 const cookies = new Cookies();
 
-const RequireAuth = ({ children, userroles,setCurrentUserRole }) => {
+const  RequireAuth = ({ children, userRoles,setCurrentUserRole }) => {
   const location = useLocation();
   let currentUserRole;
 
   if (cookies.get("token")){
-    currentUserRole = getRoleFromToken();
+    currentUserRole = getRoleFromToken(cookies.get("token"));
   }else {
     currentUserRole = Roles.visitor;
   }
-   setCurrentUserRole(currentUserRole);
-
+  setCurrentUserRole(currentUserRole);
 
   if (currentUserRole) {
-    if (userroles) {
-      if (userroles.includes(currentUserRole)) {
+    if (userRoles) {
+      if (userRoles.includes(currentUserRole)) {
         return children
       } else {
         return <Navigate to="/public/home" />

@@ -1,6 +1,5 @@
-import React from "react";
+import React from 'react';
 import './App.css';
-
 import AppRoutes from './Route/AppRoutes';
 function App() {
 
@@ -8,7 +7,6 @@ function App() {
         <React.Fragment>
           <AppRoutes></AppRoutes>
         </React.Fragment>
-
     );
 }
 

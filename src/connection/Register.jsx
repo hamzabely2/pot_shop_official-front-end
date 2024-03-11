@@ -1,12 +1,15 @@
 import React, { useState} from 'react';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import  "../page/pagePublic/pagepublic.css";
-import { RegisterService} from "../service/ServiceConnection";
-import {ToastError, ToastSuccess} from "../components/poPup/Toast";
+import  "../page/pagePublic/pagePublic.css";
+import {
+    DisplayApiErrors,
+    ToastError,
+    ToastSuccess,
+} from '../components/poPup/Toast';
 import {Link, useNavigate} from 'react-router-dom';
-import {setCookie} from "../service/useAuth";
 import {BsArrowLeft} from 'react-icons/bs';
+import {setCookie} from '../service/TokenService';
+import {RegisterService} from '../service/ConnectionService';
 
 const Register= () => {
     const [firstName,setFirstName] = useState("");
@@ -15,34 +18,19 @@ const Register= () => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    const displayApiErrors = (errors) => {
-        for (const key in errors ) {
-            if (errors.hasOwnProperty(key)) {
-                let errorMessages;
-                errorMessages = errors[key];
-                if (Array.isArray(errorMessages)) {
-                    errorMessages.forEach((errorMessage) => {
-                        ToastError(errorMessage);
-                    });
-                }
-            }
-        }
-    };
     const handleRegister = async (event ) =>{
         event.preventDefault();
         try {
             const response = await RegisterService(   {firstName, lastName, email, password});
             if (response.status === 200){
-                setTimeout(() => {
+
                     ToastSuccess(response.data.message);
-                },200)
                 let token =  response.data.result
-                setCookie("token", token,7);
+                setCookie("token", token);
                 navigate(`/public/home`,{replace: true});
-            }
-           if (response.response.status === 400){
+            }else if (response.response.status === 400){
                ToastError(response.response.data.message);
-               displayApiErrors(response.response.data.errors);
+               DisplayApiErrors(response.response.data.errors);
            }
         } catch (error) {
             console.error(error);
@@ -50,29 +38,14 @@ const Register= () => {
         }
     }
     const backgroundStyle = {
-        backgroundImage: `url("/img/imgConnection.jpg")`,
+        backgroundImage: `url("/img/imgPage/imgConnection.jpg")`,
     };
     return (
     <div>
         <div>
             <div  className="flex">
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="colored"
-                />
-
                 <div className="flex bg-image h-screen w-screen items-center justify-center backdrop-blur-xl  bg-cover bg-no-repeat"
                      style={backgroundStyle}>
-
-
                     <div className="rounded-xl bg-gray-800 bg-white  w-[400px] flex justify-center mt-10 border-5 border-amber-gray-900  drop-shadow-xl backdrop-blur-md max-sm:px-8">
                             <div className="flex flex-1 flex-col justify-center space-y-5 max-w-md">
 

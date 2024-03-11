@@ -28,3 +28,29 @@ export const ToastSuccess = (mess ) =>{
     })
 };
 
+export const ToastInfo = (mess ) =>{
+    toast.info(mess, {
+        position: "top-right",
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+    })
+};
+
+export const DisplayApiErrors = (errors) => {
+    for (const key in errors ) {
+        if (errors.hasOwnProperty(key)) {
+            const errorMessages = errors[key];
+            if (Array.isArray(errorMessages)) {
+                errorMessages.forEach((errorMessage) => {
+                    ToastError(errorMessage);
+                });
+            }
+        }
+    }
+};
+
+

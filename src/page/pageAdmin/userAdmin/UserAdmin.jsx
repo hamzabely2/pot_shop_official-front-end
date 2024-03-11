@@ -1,157 +1,115 @@
-import {Fragment, useEffect, useState} from 'react';
-import {
-  BriefcaseIcon,
-  CalendarIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  CurrencyDollarIcon,
-  LinkIcon,
-  MapPinIcon,
-  PencilIcon,
-} from '@heroicons/react/20/solid'
-import { Menu, Transition } from '@headlessui/react'
-import {Link} from 'react-router-dom';
 import AlertApi from '../../../components/skeletons/AlertApi';
-import { FaUser } from "react-icons/fa6";
-import ServiceUser from '../../../service/ServiceUser';
+import React, {useEffect, useState} from 'react';
+import {Link} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchUser, updateUser} from '../../../redux/user/userAction';
 
 export default function UserAdmin() {
-
-  const [user, setUser] = useState([]);
   let [errorMessage , setErrorMessage] = useState(false);
+  const dispatch = useDispatch();
+  const users = useSelector(state => state.user.users)
+  console.log(users)
+  const ActiveUser =(user) =>{
+    console.log(user)
+    const payload ={
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      deactivated : false,
+      Id : user.id
+    };
+    dispatch(updateUser(payload))
+  }
+
+  const DeactivateUser = (user) =>{
+    console.log(user)
+    const payload ={
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      deactivated : true,
+      Id : user.id
+    };
+    console.log(payload);
+    dispatch(updateUser(payload))
+  }
 
   useEffect(() => {
-    ServiceUser.GetAllUser()
-        .then(data => {
-          setUser(data.data.result);
-        })
-        .catch(error => {
-          setErrorMessage(true)
-          console.error('Erreur de requête :', error);
-        });
+   dispatch(fetchUser())
   }, [])
-
-  console.log(user)
 
   if (errorMessage) {
     return (
         <div >
-          <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
-            <div className="sm:flex-auto">
-              <h1 className="text-base font-semibold leading-6 text-gray-900">Lists Utilisateurs</h1>
-            </div>
-            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-              <button
-                  type="button"
-                  className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Ajouter un utilisateur
-              </button>
-            </div>
-          </div>
           <AlertApi/>
         </div>
     )
   }
 
-
-
   return (
-      <div>
-        <div className="container mx-auto p-5">
-          <div className="lg:flex lg:items-center lg:justify-between ">
-            <div className="min-w-0 flex-1">
-              <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                Back End Developer
-              </h2>
-
-            </div>
-            <div className="mt-5 flex lg:ml-4 lg:mt-0">
-        <span className="hidden sm:block">
-          <button
-              type="button"
-              className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-          >
-            <PencilIcon className="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-            Edit
-          </button>
-        </span>
-
-              <span className="ml-3 hidden sm:block">
-          <button
-              type="button"
-              className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-          >
-            <LinkIcon className="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-            View
-          </button>
-        </span>
-
-              <span className="sm:ml-3">
-          <button
-              type="button"
-              className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            <CheckIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
-            Publish
-          </button>
-        </span>
-
-              <Menu as="div" className="relative ml-3 sm:hidden">
-                <Menu.Button className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:ring-gray-400">
-                  More
-                  <ChevronDownIcon className="-mr-1 ml-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                </Menu.Button>
-
-                <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-200"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                >
-                  <Menu.Items className="absolute right-0 z-10 -mr-1 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <Menu.Item>
-                      {({ active }) => (
-                          <Link
-                              to="#"
-                              className={`${active ? 'bg-gray-100' : ''}'block px-4 py-2 text-sm text-gray-700`}
-                          >
-                            Edit
-                          </Link>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                          <Link
-                              href="#"
-                              className={`${active ? 'bg-gray-100' : ''} block px-4 py-2 text-sm text-gray-700`}
-                          >
-                            View
-                          </Link>
-                      )}
-                    </Menu.Item>
-                  </Menu.Items>
-                </Transition>
-              </Menu>
-            </div>
+      <div className="py-10">
+        <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
+          <div className="sm:flex-auto">
+            <h1 className="text-base font-semibold leading-6 text-gray-900">List utilisateur</h1>
           </div>
-          <div>
-            <ul role="list" className="divide-y divide-gray-100">
-              {user.map((person) => (
-                  <li key={person.id} className="flex justify-between gap-x-6 py-5">
-                    <div className="flex min-w-0 gap-x-4">
-                      <FaUser />
-                      <div className="min-w-0 flex-auto">
-                        <p className="text-sm font-semibold leading-6 text-gray-900">{person.firstName} {person.lastName}</p>
-                        <p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.email}</p>
-                      </div>
-                    </div>
-                  </li>
-              ))}
-            </ul>
+          <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+            <Link
+                to={"/admin/item/create"}
+                type="button"
+                className="block rounded-md bg-gray-950 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Ajouter un utilisateur
+            </Link>
+          </div>
+        </div>
+        <div className="mt-8 flow-root">
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+              <table className="min-w-full divide-y divide-gray-300">
+                <thead>
+                <tr>
+                  <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                    Prénom
+                  </th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    Nom de famille
+                  </th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    Email
+                  </th>
+                  <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    Numéro de téléphone
+                  </th>
+                  <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                    <span className="sr-only">Edit</span>
+                  </th>
+                </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 " >
+                {users.map((user) => (
+                    <tr key={user.id} >
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                        {user.firstName}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.lastName}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.email}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.phoneNumber}</td>
+                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                        {user.deactivated ?
+                            <button onClick={() => ActiveUser(user)} className="text-red-600 hover:text-indigo-900">
+                              Active<span className="sr-only">, {user.Name}</span>
+                            </button>
+                          :
+                            <button onClick={() => DeactivateUser(user)} className="text-red-600 hover:text-red-400">
+                              Désactiver<span className="sr-only">, {user.Name}</span>
+                            </button>
+                        }
+                      </td>
+                    </tr>
+                ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
