@@ -3,11 +3,11 @@ import Home from '../page/pagePublic/page/Home';
 import Item from '../page/pagePublic/item/Item';
 import Register from '../connection/Register';
 import React from 'react';
-import Nous from '../page/pagePublic/page/Nous';
 import HomeProfile from '../page/pageUser/profile/HomeProfile';
 import ItemDetails from '../page/pagePublic/item/ItemDetails';
 import Creation from '../page/pageUser/Creation';
 import Payment from '../page/pageUser/Payment';
+import MoreAboutPots from '../page/pagePublic/page/MoreAboutPots';
 
 export const Roles = {
   user: "User",
@@ -23,7 +23,7 @@ export const auth_routes = [
   },
   {
     path: "/public/nous",
-    ele: <Nous></Nous>,
+    ele: <MoreAboutPots></MoreAboutPots>,
     availability:[Roles.visitor, Roles.user]
 
   },
