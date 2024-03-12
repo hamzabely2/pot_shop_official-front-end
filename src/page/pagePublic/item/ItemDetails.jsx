@@ -9,6 +9,7 @@ import {
 } from '../../../components/poPup/Toast';
 import {createCart} from '../../../redux/cart/cartAction';
 import {useDispatch} from 'react-redux';
+import ListItem from './ListItem';
 const cookies = new Cookies();
 
 function classNames(...classes) {
@@ -249,7 +250,9 @@ export default function ItemDetails() {
                 </div>
               </section>
             </div>
+
           </div>
+          <ListItem maxItemsToShow={5}/>
         </div>
       </div>
   )

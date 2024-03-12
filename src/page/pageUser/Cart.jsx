@@ -24,7 +24,7 @@ const Cart = ({  isOpen, openModal, closeModal}) => {
     }, [])
 
 
-   let total = 0;
+    let total = cart.reduce((accumulator, currentItem) => accumulator + currentItem.subtotal, 0);
     const HandleQuantityChange = (e,ItemId) => {
         EditQuantityItem(e,ItemId,+e.target.value)
     };

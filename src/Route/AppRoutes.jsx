@@ -24,6 +24,7 @@ const AppRoutes = () => {
     setToken(cookies.get('token'));
   }, [cookies.get('token')]);
 
+
   const handleSignOut = () => {
     setCurrentUserRole(undefined);
   };

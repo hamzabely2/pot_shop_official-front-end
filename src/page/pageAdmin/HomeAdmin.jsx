@@ -50,7 +50,6 @@ export default function HomeAdmin({handleSignOut }) {
   const SignOut =()=> {
     cookies.remove('token', { path: '/' });
     navigate("/public/home")
-    handleSignOut();
   }
 
   const componentsMap = {
