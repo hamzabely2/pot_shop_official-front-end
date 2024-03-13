@@ -48,7 +48,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           source: "pot_shop_front_official_end.tar"
-          target: "/home/ubuntu/pot_shop_front_official_end.tar"
+          target: "./ubuntu/pot_shop_front_official_end.tar"
 
       - name: SSH into remote machine and load Docker image
         uses: appleboy/ssh-action@master
