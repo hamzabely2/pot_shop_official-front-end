@@ -23,11 +23,22 @@ jobs:
   #        GITHUB_TOKEN: ${{ secrets.TOKEN }}  # Needed to get PR information, if any
   #        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           
+name: Pipeline_CI_CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    #needs: [sonarcloud]
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      
     steps:
       - name: Pull Data from main branch
         uses: actions/checkout@v2
@@ -35,39 +46,19 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t pot_shop_official_front_end .
-        
+
       - name: Save Docker image to a tar file
         run: |
           docker save -o pot_shop_front_official_end.tar pot_shop_official_front_end
 
       - name: Transfer Docker image to remote machine
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
-          source: "pot_shop_front_official_end.tar"
-          target: "./ubuntu/pot_shop_front_official_end.tar"
+        run: |
+          sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} pot_shop_front_official_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:./ubuntu/pot_shop_front_official_end.tar
 
       - name: SSH into remote machine and load Docker image
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.REMOTE_PORT }}
-          script: |
-            docker load -i /path/on/remote/machine/pot_shop_front_official_end.tar
-          
+        run: |
+          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.REMOTE_PORT }} ${{ secrets.REMOTE_USERNAME }}@${{ secrets.REMOTE_HOST }} 'docker load -i /path/on/remote/machine/pot_shop_front_official_end.tar'
+
       - name: SSH into remote machine and start Docker Compose
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.REMOTE_PORT }}
-          script: |
-            cd /path/to/your/project/directory
-            docker-compose up -d
+        run: |
+          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.REMOTE_PORT }} ${{ secrets.REMOTE_USERNAME }}@${{ secrets.REMOTE_HOST }} 'cd /path/to/your/project/directory && docker-compose up -d'
