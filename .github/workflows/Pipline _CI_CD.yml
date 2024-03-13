@@ -42,14 +42,10 @@ jobs:
           docker save -o pot_shop_front_official_end.tar pot_shop_official_front_end
 
       - name: Transfer Docker image to remote machine
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.REMOTE_PORT }}
-          source: "pot_shop_front_official_end.tar"
-          target: "/path/on/remote/machine/pot_shop_front_official_end.tar"
+        run: |
+          sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no pot_shop_front_official_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/path/on/remote/machine/
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
       - name: SSH into remote machine and load Docker image
         uses: appleboy/ssh-action@master
