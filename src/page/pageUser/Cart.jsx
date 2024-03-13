@@ -128,9 +128,11 @@ const Cart = ({  isOpen, openModal, closeModal}) => {
                                         </div>
                                         <p className="mt-0.5 text-sm text-gray-500">Frais de port et taxes calculés à la caisse.</p>
                                         <div className="mt-6">
+                                            {cart.length > 0 &&
                                             <Link to="/public/order"
                                                   className="flex items-center justify-center rounded-md border border-transparent bg-gray-950 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-gray-900">Passe la Commande
                                             </Link>
+                                            }
                                         </div>
                                     </div>
                                 </div>

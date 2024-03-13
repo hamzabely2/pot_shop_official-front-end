@@ -1,10 +1,5 @@
 import AlertApi from '../../components/skeletons/AlertApi';
 
-const people = [
-  { name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
-]
-
-
 
 export default function OrderAdmin() {
 

@@ -9,11 +9,6 @@ const UserService = {
   PutPassword : async (token,data) => {
     return await ServiceGeneric.putWithToken(`user/update/password`,token,data);
   },
-
-  //cart
-  GetCartUser : async (token) => {
-    return await ServiceGeneric.getWithToken(`cart`,token);
-  },
 };
 
 export default UserService

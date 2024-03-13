@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {Listbox, Popover, Transition} from '@headlessui/react';
 import {
   CheckIcon,
@@ -6,27 +6,49 @@ import {
   ChevronUpIcon,
 } from '@heroicons/react/20/solid';
 import Cookies from 'universal-cookie';
+import {fetchAddress} from '../../redux/address/addressAction';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchCart} from '../../redux/cart/cartAction';
+import {createOrder} from '../../redux/order/orderAction';
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Payment() {
-  const cookies = new Cookies();
-  const [cart, setCart] = useState([]);
+  const dispatch = useDispatch();
   const [total, setTotal] = useState(0)
-  let [adresses , setAdresses] = useState([]);
+  let addresses = useSelector(state => state.address.address);
+  let cart = useSelector(state => state.cart.cart);
+  let [payload , setPayload] = useState({
+    FirstName: "",
+    LastName: "",
+    Email : "",
+    PhoneNumber : "" ,
+    OrderItems : "",
+    TotalAmount : "",
+    City : "",
+    State : "",
+    Street : "",
+    Code : "",
+    PaymentMethod : "",
+    OrderStatus : "",
+  })
 
+  useEffect(() => {
+    dispatch((fetchAddress()))
+    dispatch((fetchCart()))
+  }, [])
 
+  const CreateOrder = () =>{
+    dispatch((createOrder(payload)))
+  }
 
-
-
-  const formattedAddresses = adresses.map(address => {
+  const formattedAddresses = addresses.map(address => {
     return `${address.id} ${address.city} ${address.state} ${address.street} ${address.code}`;
   });
-  console.log(formattedAddresses);
 
-  const [selectedShippingAdress, setSelectedShippingAdress] = useState(formattedAddresses[1])
-  const [selectedBilingAdress, setSelectedBilingAdress] = useState(formattedAddresses[1])
+  const [selectedShippingAdress, setSelectedShippingAdress] = useState(formattedAddresses[0])
+  const [selectedBilingAdress, setSelectedBilingAdress] = useState(formattedAddresses[0])
 
   return (
       <div className="bg-white">
@@ -37,16 +59,23 @@ export default function Payment() {
               className="bg-gray-50 px-4 pb-10 pt-16 sm:px-6 lg:col-start-2 lg:row-start-1 lg:bg-transparent lg:px-0 lg:pb-16"
           >
             <div className="mx-auto max-w-lg lg:max-w-none">
-              <h2 id="summary-heading" className="text-lg font-medium text-gray-900">
+              <h2 id="summary-heading"
+                  className="text-lg font-medium text-gray-900">
                 Récapitulatif de la commande
               </h2>
 
-              <ul role="list" className="divide-y divide-gray-200 text-sm font-medium text-gray-900">
+              <ul role="list"
+                  className="divide-y divide-gray-200 text-sm font-medium text-gray-900">
                 {cart.map((item) => (
-                    <li key={item.id} className="flex items-start space-x-4 py-6">
-                      <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                    <li key={item.id}
+                        className="flex items-start space-x-4 py-6">
+                      <div
+                          className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
-                            src={item.items.images && item.items.images.length > 0 ? `data:image/jpeg;base64,${item.items.images[0]}` : '/placeholder.jpg'}
+                            src={item.items.images && item.items.images.length >
+                            0 ?
+                                `data:image/jpeg;base64,${item.items.images[0]}` :
+                                '/placeholder.jpg'}
                             alt={item.items.name}
                             className="h-full w-full object-cover object-center group-hover:opacity-75"
                         />
@@ -77,19 +106,24 @@ export default function Payment() {
                   <dd>$26.80</dd>
                 </div>
 
-                <div className="flex items-center justify-between border-t border-gray-200 pt-6">
+                <div
+                    className="flex items-center justify-between border-t border-gray-200 pt-6">
                   <dt className="text-base">Total</dt>
                   <dd className="text-base">$361.80</dd>
                 </div>
               </dl>
 
-              <Popover className="fixed inset-x-0 bottom-0 flex flex-col-reverse text-sm font-medium text-gray-900 lg:hidden">
-                <div className="relative z-10 border-t border-gray-200 bg-white px-4 sm:px-6">
+              <Popover
+                  className="fixed inset-x-0 bottom-0 flex flex-col-reverse text-sm font-medium text-gray-900 lg:hidden">
+                <div
+                    className="relative z-10 border-t border-gray-200 bg-white px-4 sm:px-6">
                   <div className="mx-auto max-w-lg">
-                    <Popover.Button className="flex w-full items-center py-6 font-medium">
+                    <Popover.Button
+                        className="flex w-full items-center py-6 font-medium">
                       <span className="mr-auto text-base">Total</span>
                       <span className="mr-2 text-base">$361.80</span>
-                      <ChevronUpIcon className="h-5 w-5 text-gray-500" aria-hidden="true" />
+                      <ChevronUpIcon className="h-5 w-5 text-gray-500"
+                                     aria-hidden="true"/>
                     </Popover.Button>
                   </div>
                 </div>
@@ -105,7 +139,8 @@ export default function Payment() {
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                     >
-                      <Popover.Overlay className="fixed inset-0 bg-black bg-opacity-25" />
+                      <Popover.Overlay
+                          className="fixed inset-0 bg-black bg-opacity-25"/>
                     </Transition.Child>
 
                     <Transition.Child
@@ -117,17 +152,14 @@ export default function Payment() {
                         leaveFrom="translate-y-0"
                         leaveTo="translate-y-full"
                     >
-                      <Popover.Panel className="relative bg-white px-4 py-6 sm:px-6">
+                      <Popover.Panel
+                          className="relative bg-white px-4 py-6 sm:px-6">
                         <dl className="mx-auto max-w-lg space-y-6">
                           <div className="flex items-center justify-between">
                             <dt className="text-gray-600">Subtotal</dt>
                             <dd>{total}$</dd>
                           </div>
 
-                          <div className="flex items-center justify-between">
-                            <dt className="text-gray-600">Shipping</dt>
-                            <dd>$15.00</dd>
-                          </div>
 
                           <div className="flex items-center justify-between">
                             <dt className="text-gray-600">Taxes</dt>
@@ -142,11 +174,13 @@ export default function Payment() {
             </div>
           </section>
 
-          <form className="px-4 pb-36 pt-16 sm:px-6 lg:col-start-1 lg:row-start-1 lg:px-0 lg:pb-16">
+          <form
+              className="px-4 pb-36 pt-16 sm:px-6 lg:col-start-1 lg:row-start-1 lg:px-0 lg:pb-16">
             <div className="mx-auto max-w-lg lg:max-w-none">
               <section aria-labelledby="contact-info-heading">
-                <h2 id="contact-info-heading" className="text-lg font-medium text-gray-900">
-                  Informations sur les contacts
+                <h2 id="contact-info-heading"
+                    className="text-lg font-medium text-gray-900">
+                Informations sur les contacts
                 </h2>
               </section>
 
@@ -333,30 +367,10 @@ export default function Payment() {
                   )}
                 </Listbox>
               </section>
-
-              <section aria-labelledby="billing-heading" className="mt-10">
-                <h2 id="billing-heading" className="text-lg font-medium text-gray-900">
-                  Billing information
-                </h2>
-                <div className="mt-6 flex items-center">
-                  <input
-                      id="same-as-shipping"
-                      name="same-as-shipping"
-                      type="checkbox"
-                      defaultChecked
-                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  />
-                  <div className="ml-2">
-                    <label htmlFor="same-as-shipping" className="text-sm font-medium text-gray-900">
-                      Identique aux informations d'expédition
-                    </label>
-                  </div>
-                </div>
-              </section>
               <div className="mt-10 border-t border-gray-200 pt-6 sm:flex sm:items-center sm:justify-between">
                 <button
-                    type="submit"
-                    className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:order-last sm:ml-6 sm:w-auto"
+                    onClick={CreateOrder}
+                    className="w-full rounded-md border border-transparent bg-gray-950 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:order-last sm:ml-6 sm:w-auto"
                 >
                   Continuer
                 </button>

@@ -19,9 +19,9 @@ export const fetchCart = createAsyncThunk(
 
 export const createCart = createAsyncThunk(
     'cart/create',
-    async ({ data },thunkAPI) => {
+    async ({ payload },thunkAPI) => {
       try {
-        const response = await ServiceGeneric.postWithToken("cart/create", data);
+        const response = await ServiceGeneric.postWithToken("cart/create", payload);
         return response.data;
       } catch (error) {
         return thunkAPI.rejectWithValue(error);
