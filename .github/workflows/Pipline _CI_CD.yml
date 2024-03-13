@@ -46,7 +46,7 @@ jobs:
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          #key: ${{ secrets.SSH_PRIVATE_KEY }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.REMOTE_PORT }}
           source: "pot_shop_front_official_end.tar"
