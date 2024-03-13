@@ -46,6 +46,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           source: "pot_shop_front_official_end.tar"
           target: "./ubuntu/pot_shop_front_official_end.tar"
