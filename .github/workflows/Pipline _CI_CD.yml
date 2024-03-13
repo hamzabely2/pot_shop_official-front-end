@@ -22,20 +22,6 @@ jobs:
   #      env:
   #        GITHUB_TOKEN: ${{ secrets.TOKEN }}  # Needed to get PR information, if any
   #        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          
-name: Pipeline_CI_CD
-
-on:
-  push:
-    branches:
-      - main
-      - develop
-  pull_request:
-    branches:
-      - main
-      - develop
-
-jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
