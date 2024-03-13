@@ -35,16 +35,16 @@ jobs:
 
       - name: Save Docker image to a tar file
         run: |
-          docker save -o pot_shop_front_official_end.tar pot_shop_official_front_end
+          docker save -o pot_shop_official_front_end.tar pot_shop_official_front_end
 
       - name: Transfer Docker image to remote machine
         run: |
-          sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} pot_shop_front_official_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:
+          sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} pot_shop_official_front_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:
 
       - name: SSH into remote machine and load Docker image
         run: |
-          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'docker load -i pot_shop_front_official_end.tar'
+          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'docker load -i pot_shop_official_front_end.tar'
 
       - name: SSH into remote machine and start Docker Compose
         run: |
-          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'tar -xvf pot_shop_front_official_end.tar && cd pot_shop_front_official_end && docker-compose up -d'
+          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'tar -xvf pot_shop_official_front_end.tar && cd pot_shop_official_front_end && docker-compose up -d'
