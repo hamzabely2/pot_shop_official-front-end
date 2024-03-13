@@ -45,8 +45,9 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USERNAME }}
+          username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.REMOTE_PORT }}
           source: "pot_shop_front_official_end.tar"
           target: "/ubuntu/pot_shop_front_official_end.tar"
