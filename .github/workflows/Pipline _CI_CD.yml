@@ -1,4 +1,4 @@
-name: Pipline _CI_CD
+name: Pipeline_CI_CD
 
 on:
   push:
@@ -9,8 +9,9 @@ on:
     branches:
       - main
       - develop
+
 jobs:
- sonarcloud:
+  sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
     steps:
@@ -23,12 +24,50 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           
- build-and-deploy:
+  build-and-deploy:
     runs-on: self-hosted
     needs: [sonarcloud]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-    
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      
     steps:
-        - name: Pull Data from main branch
-          uses: actions/checkout@v2
-  
+      - name: Pull Data from main branch
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t pot_shop_official_front_end .
+        
+      - name: Save Docker image to a tar file
+        run: |
+          docker save -o pot_shop_front_official_end.tar pot_shop_official_front_end
+
+      - name: Transfer Docker image to remote machine
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.REMOTE_PORT }}
+          source: "pot_shop_front_official_end.tar"
+          target: "/path/on/remote/machine/pot_shop_front_official_end.tar"
+
+      - name: SSH into remote machine and load Docker image
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.REMOTE_PORT }}
+          script: |
+            docker load -i /path/on/remote/machine/pot_shop_front_official_end.tar
+          
+      - name: SSH into remote machine and start Docker Compose
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.REMOTE_PORT }}
+          script: |
+            cd /path/to/your/project/directory
+            docker-compose up -d
