@@ -31,23 +31,22 @@ jobs:
   
       - name: Build Docker image
         run: |
-          sudo docker-compose -f docker-compose.yml build 
-          sudo docker save pot_shop_official_front_end > pot_shop_official_front_end.tar 
-          
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
-
-          
+          docker build -t pot_shop_official_front_end .
+  
+      - name: Save Docker image to a tar file
+        run: |
+          docker save -o pot_shop_official_front_end.tar pot_shop_official_front_end
+  
       - name: Transfer Docker image to remote machine
         run: |
-          sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no pot_shop_official_front_end ${{ secrets.USERNAME }}@${{ secrets.HOST }}: 
+          echo "${{ secrets.PASSWORD }}" | sshpass -e scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} pot_shop_official_front_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
           SSHPASS: ${{ secrets.PASSWORD }}
   
-      - name: load Docker image
+      - name: SSH into remote machine and load Docker image
         run: |
-          echo "${{ secrets.PASSWORD }}" | sshpass -e ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'sudo -S docker load -i pot_shop_official_front_end'
+          echo "${{ secrets.PASSWORD }}" | sshpass -e ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'sudo -S docker load -i pot_shop_official_front_end.tar'
         env:
           SSHPASS: ${{ secrets.PASSWORD }}
   
