@@ -22,6 +22,7 @@ jobs:
   #      env:
   #        GITHUB_TOKEN: ${{ secrets.TOKEN }}  # Needed to get PR information, if any
   #        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+ # build-and-deploy
   build-and-deploy:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
@@ -39,7 +40,7 @@ jobs:
   
       - name: Transfer Docker image to remote machine
         run: |
-          echo "${{ secrets.PASSWORD }}" | sshpass -e scp -o StrictHostKeyChecking=no -P ${{ secrets.PORT }} pot_shop_official_front_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:
+          sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no pot_shop_official_front_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}: 
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
           SSHPASS: ${{ secrets.PASSWORD }}
@@ -50,6 +51,6 @@ jobs:
         env:
           SSHPASS: ${{ secrets.PASSWORD }}
   
-      - name: SSH into remote machine and start Docker Compose
+      - name: SSH into remote machine and extract Docker Compose file
         run: |
-          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'docker-compose -f pot_shop_official_front_end/docker-compose.yml up -d'
+          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'tar -xf pot_shop_official_front_end.tar && cd pot_shop_official_front_end && docker-compose up -d'
