@@ -23,9 +23,8 @@ jobs:
   #        GITHUB_TOKEN: ${{ secrets.TOKEN }}  # Needed to get PR information, if any
   #        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
  # build-and-deploy
- # build-and-deploy
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     steps:
       - name: Pull Data from main branch
@@ -38,20 +37,24 @@ jobs:
       - name: Save Docker image to a tar file
         run: |
           docker save -o pot_shop_official_front_end.tar pot_shop_official_front_end
-  
+
+      ###################
       - name: Transfer Docker image to remote machine
         run: |
           sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no pot_shop_official_front_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}: 
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
           SSHPASS: ${{ secrets.PASSWORD }}
-  
-      - name: SSH into remote machine and load Docker image
+      ###################
+      - name: load Docker image
         run: |
           echo "${{ secrets.PASSWORD }}" | sshpass -e ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'sudo -S docker load -i pot_shop_official_front_end.tar'
         env:
           SSHPASS: ${{ secrets.PASSWORD }}
-  
-      - name: SSH into remote machine and extract Docker Compose file
+       ###################
+      - name: Start Docker Compose file
         run: |
           sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'tar -xf pot_shop_official_front_end.tar && cd pot_shop_official_front_end && docker-compose up -d'
+      ###################
+      - name: Remove Docker Images
+        run: sudo docker image prune -a -f
