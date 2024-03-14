@@ -32,9 +32,12 @@ jobs:
   
       - name: Build Docker images
         run: |
-          sudo docker-compose -f docker-compose.yml build 
-          sudo docker save pot_shop_official_front_end > pot_shop_official_front_end.tar 
-            
+          docker build -t pot_shop_official_front_end .
+  
+      - name: Save Docker image to a tar file
+        run: |
+          docker save -o pot_shop_official_front_end.tar pot_shop_official_front_end
+  
       ###################
       - name: Transfer Docker image to remote machine
         run: |
