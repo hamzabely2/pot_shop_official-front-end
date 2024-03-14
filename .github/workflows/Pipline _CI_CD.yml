@@ -45,8 +45,8 @@ jobs:
           
       - name: SSH into remote machine and load Docker image
         run: |
-          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'docker load -i pot_shop_official_front_end.tar'
+          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'sudo docker load -i /pot_shop_official_front_end.tar'
 
       - name: SSH into remote machine and start Docker Compose
         run: |
-          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'tar -xvf pot_shop_official_front_end.tar && docker-compose -f pot_shop_official_front_end/docker-compose.yml up -d'
+          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'docker-compose -f pot_shop_official_front_end/docker-compose.yml up -d'
