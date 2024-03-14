@@ -17,7 +17,7 @@ COPY . .
  RUN npm run build
 
 # Exposer le port 3000
-EXPOSE 80
+#EXPOSE 80
 
 # Commande pour exécuter l'application lorsque le conteneur démarre
 CMD ["npm", "start"]
