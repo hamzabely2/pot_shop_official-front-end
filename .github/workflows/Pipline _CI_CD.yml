@@ -58,4 +58,5 @@ jobs:
 
       ###################
       - name: Remove Docker Images
+        run: |
          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'sudo docker image prune -a -f'
