@@ -32,16 +32,13 @@ jobs:
   
       - name: Build Docker image
         run: |
-          docker build -t pot_shop_official_front_end .
+          sudo docker-compose -f docker-compose.yml build 
+          sudo docker save pot_shop_official_front_end > pot_shop_official_front_end.tar 
   
-      - name: Save Docker image to a tar file
-        run: |
-          docker save -o pot_shop_official_front_end.tar pot_shop_official_front_end
-
       ###################
       - name: Transfer Docker image to remote machine
         run: |
-          sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no pot_shop_official_front_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}: /pot_shop
+          sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no pot_shop_official_front_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}: /home/hamza/pot_shop
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
           SSHPASS: ${{ secrets.PASSWORD }}
