@@ -22,7 +22,8 @@ jobs:
   #      env:
   #        GITHUB_TOKEN: ${{ secrets.TOKEN }}  # Needed to get PR information, if any
   #        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
- build-and-deploy:
+# build-and-deploy
+build-and-deploy:
   runs-on: ubuntu-latest
   if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
   steps:
@@ -39,7 +40,7 @@ jobs:
 
     - name: Transfer Docker image to remote machine
       run: |
-       sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no pot_shop_official_front_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}: 
+        sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no pot_shop_official_front_end.tar ${{ secrets.USERNAME }}@${{ secrets.HOST }}: 
       env:
         SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         SSHPASS: ${{ secrets.PASSWORD }}
@@ -48,6 +49,13 @@ jobs:
       run: |
         echo "${{ secrets.PASSWORD }}" | sshpass -e ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'sudo -S docker load -i pot_shop_official_front_end.tar'
       env:
+        SSHPASS: ${{ secrets.PASSWORD }}
+
+    - name: Transfer Docker-compose file to remote machine
+      run: |
+        sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.USERNAME }}@${{ secrets.HOST }}: 
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         SSHPASS: ${{ secrets.PASSWORD }}
 
     - name: SSH into remote machine and start Docker Compose
