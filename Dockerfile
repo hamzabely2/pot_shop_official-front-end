@@ -16,6 +16,7 @@ COPY . .
 # Build de l'application React
 RUN npm run build
 
+
 # Exposer le port 3000
 EXPOSE 1002
 
