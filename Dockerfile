@@ -1,4 +1,4 @@
-# Utilisation d'une image de base avec Node.js
+# Utilisation d'une image de base avec Node.js pour architecture arm64
 FROM node:14-alpine
 
 # Définir le répertoire de travail dans le conteneur
