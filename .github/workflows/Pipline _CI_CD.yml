@@ -53,7 +53,7 @@ jobs:
        ###################
       - name: Start Docker Container
         run: |
-          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'docker ps -a | grep pot_shop_official_front_end | awk "{print $1}" | xargs docker stop && docker ps -a | grep pot_shop_official_front_end | awk "{print $1}" | xargs docker rm && docker-compose -f front/docker-compose.yml up -d'
+          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'docker-compose -f front/docker-compose.yml down && docker-compose -f front/docker-compose.yml up -d'
       ###################
       - name: Remove Docker Images
         run: |
