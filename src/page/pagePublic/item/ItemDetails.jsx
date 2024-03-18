@@ -39,7 +39,7 @@ export default function ItemDetails() {
         ItemId: item.id,
         Quantity: quantity
       }
-      dispatch(createCart({ token: cookies.get('token'),data : payload }))
+      dispatch(createCart({payload : payload }))
     }
   };
 

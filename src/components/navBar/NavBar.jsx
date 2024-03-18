@@ -106,7 +106,7 @@ export default function NavBar({ currentUserRole, handleSignOut }) {
                                                 className="flex flex-shrink-0 items-center">
                                                 <img
                                                     className="h-10 w-auto"
-                                                    src="/img/imgPage/logos.PNG"
+                                                    src="/img/imgPage/logos.png"
                                                     alt="pot shop"
                                                 />
                                             </div>
@@ -220,7 +220,7 @@ export default function NavBar({ currentUserRole, handleSignOut }) {
                                     <Disclosure.Panel className="sm:hidden">
                                         <div
                                             className="space-y-1 px-2 pb-3 pt-2">
-                                            {navigation.map((item) => (
+                                            {navigationMobile.map((item) => (
                                                 <Link
                                                     key={item.name}
                                                     as="a"
