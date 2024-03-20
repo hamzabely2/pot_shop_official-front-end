@@ -18,13 +18,12 @@ const Login = ( ) => {
 
     const handleLogin = async (event) =>{
         event.preventDefault();
-
         try {
             const response = await LoginService({email, password});
             if (response.status === 200) {
                 ToastSuccess(response.data.message);
                 let token =  response.data.result
-                setCookie("token", token);
+               //setCookie("token", token);
                 getRoleFromToken(token) === Roles.admin ? navigate("/admin/home") : navigate("/public/home");
             }else if (response.response.status === 400) {
                 console.log(response)

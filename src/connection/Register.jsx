@@ -26,7 +26,7 @@ const Register= () => {
 
                     ToastSuccess(response.data.message);
                 let token =  response.data.result
-                setCookie("token", token);
+                //setCookie("token", token);
                 navigate(`/public/home`,{replace: true});
             }else if (response.response.status === 400){
                ToastError(response.response.data.message);
