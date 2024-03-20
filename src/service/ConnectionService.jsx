@@ -14,7 +14,10 @@ export const RegisterService = async(payload)  => {
                 },
             }
         );
-        document.cookie = `auth_token=${response.data.token}; Path=/; Expires=${new Date(response.data.expiresIn)};`;
+        const expirationDate = new Date();
+        expirationDate.setTime(expirationDate.getTime() + (2 * 60 * 60 * 1000));
+
+        document.cookie = `token=${response.data.result}; Path=/; Expires=${expirationDate.toUTCString()};`
         return response;
     } catch (error) {
         return error;
@@ -35,7 +38,10 @@ export const LoginService = async(payload)  => {
                 },
             }
         );
-        document.cookie = `auth_token=${response.data.token}; Path=/; Expires=${new Date(response.data.expiresIn)};`;
+        const expirationDate = new Date();
+        expirationDate.setTime(expirationDate.getTime() + (2 * 60 * 60 * 1000));
+
+        document.cookie = `token=${response.data.result}; Path=/; Expires=${expirationDate.toUTCString()};`
         return response;
     } catch (error) {
         return error;
