@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {fetchUser, getUser, updateUser} from './userAction';
+import {deleteUser, fetchUser, getUser, updateUser} from './userAction';
 import {
   DisplayApiErrors,
   ToastError,
@@ -64,6 +64,15 @@ const  userSlice = createSlice({
       DisplayApiErrors(action.payload.data.errors);
     })
 
+    builder.addCase(deleteUser.pending, (state, action) => {
+      state.isLoading = true;
+    })
+    builder.addCase(deleteUser.fulfilled, (state, action) => {
+      state.isLoading = false;
+    })
+    builder.addCase(deleteUser.rejected, (state, action) => {
+      state.isError = true;
+    })
 
   }
 });

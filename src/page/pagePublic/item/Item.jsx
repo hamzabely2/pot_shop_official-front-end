@@ -1,46 +1,39 @@
-import React, {Fragment, useEffect, useState} from 'react';
-import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
-import { FunnelIcon } from '@heroicons/react/20/solid'
+import React, { Fragment, useEffect, useState } from 'react';
+import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react';
+import { FunnelIcon } from '@heroicons/react/20/solid';
 import ListItem from './ListItem';
-import SkeletonItem from '../../../components/skeletons/SkeletonItem';
-import {filteredItems} from '../../../redux/item/itemAction';
-import {fetchColor} from '../../../redux/color/colorAction';
-import {fetchCategory} from '../../../redux/category/categoryAction';
-import {fetchMaterial} from '../../../redux/material/materialAction';
-import {useDispatch, useSelector} from 'react-redux';
-
+import { filteredItems } from '../../../redux/item/itemAction';
+import { fetchColor } from '../../../redux/color/colorAction';
+import { fetchCategory } from '../../../redux/category/categoryAction';
+import { fetchMaterial } from '../../../redux/material/materialAction';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function Item() {
-  const [open, setOpen] = useState(false)
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-  let [errorMessage , setErrorMessage] = useState(false);
-  let category = useSelector(state => state.category);
-  let material = useSelector(state => state.material);
-  let color = useSelector(state => state.color);
+  const [open, setOpen] = useState(false);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const dispatch = useDispatch();
-  let listItemFiltered = useSelector(state => state.item.itemFiltered)
-  let listItem = useSelector(state => state.item.data);
-  let [selectedFilters, setSelectedFilters] = useState({
-    colors: [""],
-    categories: [""],
-    materials: [""]
+  const category = useSelector(state => state.category);
+  const material = useSelector(state => state.material);
+  const color = useSelector(state => state.color);
+  let listItemFiltered = useSelector(state => state.item.itemFiltered);
+  const listItem = useSelector(state => state.item.data);
+  listItemFiltered = listItemFiltered.length > 0 ? listItemFiltered : listItem;
+  const [selectedFilters, setSelectedFilters] = useState({
+    colors: [''],
+    categories: [''],
+    materials: ['']
   });
-
-  let areFiltersEmpty = () => {
-    return Object.values(selectedFilters).every(filter => filter.every(value => value === ""));
-  };
-  listItemFiltered = areFiltersEmpty() ? listItem : listItemFiltered;
 
   useEffect(() => {
     dispatch(fetchMaterial());
     dispatch(fetchCategory());
     dispatch(fetchColor());
-  }, [])
+  }, [dispatch]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(selectedFilters)
     dispatch(filteredItems(selectedFilters));
-  }
+  };
 
   const handleCheckboxChange = (filterType, value) => {
     setSelectedFilters(prevFilters => ({
@@ -49,32 +42,20 @@ export default function Item() {
           ? prevFilters[filterType].filter(item => item !== value)
           : [...prevFilters[filterType], value]
     }));
-  }
-
+  };
 
   const CleanFilter = () => {
     setSelectedFilters({
-      colors: [""],
-      categories: [""],
-      materials: [""]
+      colors: [''],
+      categories: [''],
+      materials: ['']
     });
 
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
       checkbox.checked = false;
     });
-
-    dispatch(filteredItems(selectedFilters));
-  }
-
-
-  if (errorMessage) {
-    return (
-        <div >
-          <SkeletonItem/>
-        </div>
-    )
-  }
-
+    dispatch(filteredItems({ colors: [''], categories: [''], materials: [''] }));
+  };
 
   return (
       <div className="bg-white">

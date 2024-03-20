@@ -43,10 +43,9 @@ export const deleteAddress = createAsyncThunk(
 
 export const updateAddress = createAsyncThunk(
     'address/update',
-    async ({data,id },thunkAPI) => {
-      console.log({ data,id })
+    async ({payload,id },thunkAPI) => {
       try {
-        const response = await ServiceGeneric.putWithToken(`address/update/${id}`,data);
+        const response = await ServiceGeneric.putWithToken(`address/update/${id}`,payload);
         return response.data;
       } catch (error) {
         return thunkAPI.rejectWithValue(error);

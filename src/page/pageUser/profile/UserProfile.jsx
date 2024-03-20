@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import ImageUserDialog from './dialogsProfile/ImageUserDialog';
 import {useDispatch} from 'react-redux';
-import {updateUser} from '../../../redux/user/userAction';
+import {deleteUser, updateUser} from '../../../redux/user/userAction';
 const cookies = new Cookies();
 const imagesContext = require.context('../../../../public/img/profile', false, /\.(png|jpe?g|svg)$/);
 const imageUrls = imagesContext.keys().map(imagesContext);
@@ -24,17 +24,13 @@ export default function UserProfile({user}) {
 
 
   const DeleteUser = () => {
-    UserService.DeleteUser()
-        .then(data => {
-          console.log(data)
-          ToastSuccess(data.data.message);
-          cookies.remove('token', { path: '/' });
-          navigate("/public/login")
-
-        })
-        .catch(error => {
-          console.error('Erreur de requête :', error);
-        });
+    dispatch(deleteUser())
+        .then((result) => {
+      if(!result.error) {
+        cookies.remove('token', { path: '/' });
+        navigate("/public/login")
+      }
+    });
   };
 
   const UpdateUser = () => {

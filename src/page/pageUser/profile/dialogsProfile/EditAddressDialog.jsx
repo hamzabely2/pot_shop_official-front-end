@@ -31,7 +31,7 @@ export default function EditAddressDialog({ isOpen, closeModal,address}) {
 
   const EditAddress = () => {
       payload.Code = payload.Code ? payload.Code : 0
-      dispatch(updateAddress({ token: cookies.get('token'),data : payload, id : +address.id }))
+      dispatch(updateAddress({ payload : payload, id : +address.id }))
         .then((result) => {
           if(!result.error) {
             closeModal();

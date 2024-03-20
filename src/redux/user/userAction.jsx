@@ -36,3 +36,15 @@ export const updateUser = createAsyncThunk(
       }
     }
 );
+
+export const deleteUser = createAsyncThunk(
+    'user/delete',
+    async (payload,thunkAPI) => {
+      try {
+        const response =  await ServiceGeneric.deleteWithToken("user/delete",payload);
+        return response.data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error);
+      }
+    }
+);
