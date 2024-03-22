@@ -26,12 +26,18 @@ export default function UserProfile({user}) {
   const DeleteUser = () => {
     dispatch(deleteUser())
         .then((result) => {
-      if(!result.error) {
-        cookies.remove('token', { path: '/' });
-        navigate("/public/login")
-      }
-    });
+          if (!result.error) {
+            cookies.remove('token', { path: '/' });
+            navigate("/public/home");
+          } else {
+            console.error("Une erreur s'est produite lors de la suppression de l'utilisateur.");
+          }
+        })
+        .catch((error) => {
+          console.error("Une erreur s'est produite :", error);
+        });
   };
+
 
   const UpdateUser = () => {
     console.log(payload);
