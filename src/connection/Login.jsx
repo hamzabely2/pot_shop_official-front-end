@@ -123,7 +123,7 @@ const Login = ( ) => {
                                         <p className="mt-10 text-center text-sm text-gray-500">
                                             Pas encore membre ?
                                             <Link to={"/public/register"}
-                                               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">  Inscrivez-vous maintenant</Link>
+                                               className="font-semibold leading-6 text-gray-950 hover:text-gray-800">  Inscrivez-vous maintenant</Link>
                                         </p>
                                     </div>
                                 </div>

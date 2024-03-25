@@ -136,14 +136,7 @@ const Register= () => {
                                                     >
                                                         Password
                                                     </label>
-                                                    <div className="text-sm">
-                                                        <a
-                                                            href="register#"
-                                                            className="font-semibold text-indigo-600 hover:text-indigo-500"
-                                                        >
-                                                            Mot de passe oubliéd?
-                                                        </a>
-                                                    </div>
+
                                                 </div>
                                                 <div className="mt-2">
                                                     <input

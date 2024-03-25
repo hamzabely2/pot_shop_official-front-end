@@ -10,6 +10,7 @@ import {fetchAddress} from '../../redux/address/addressAction';
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchCart} from '../../redux/cart/cartAction';
 import {createOrder} from '../../redux/order/orderAction';
+import {ToastInfo} from '../../components/poPup/Toast';
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -40,7 +41,7 @@ export default function Payment() {
   }, [])
 
   const CreateOrder = () =>{
-    dispatch((createOrder(payload)))
+    ToastInfo("Le paiement n'est pas disponible pour le moment, veuillez réessayer plus tard")
   }
 
   const formattedAddresses = addresses.map(address => {
@@ -52,7 +53,8 @@ export default function Payment() {
 
   return (
       <div className="bg-white">
-        <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-x-16 lg:grid-cols-2 lg:px-8 xl:gap-x-48">
+        <div
+            className="relative mx-auto grid max-w-7xl grid-cols-1 gap-x-16 lg:grid-cols-2 lg:px-8 xl:gap-x-48">
           <h1 className="sr-only">Informations sur la commande</h1>
           <section
               aria-labelledby="summary-heading"
@@ -72,10 +74,7 @@ export default function Payment() {
                       <div
                           className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
-                            src={item.items.images && item.items.images.length >
-                            0 ?
-                                `data:image/jpeg;base64,${item.items.images[0]}` :
-                                '/placeholder.jpg'}
+                            src={item.items.images.length > 0 ? `data:image/jpeg;base64,${item.items.images[0].imageData}` : '/placeholder.jpg'}
                             alt={item.items.name}
                             className="h-full w-full object-cover object-center group-hover:opacity-75"
                         />
@@ -180,18 +179,21 @@ export default function Payment() {
               <section aria-labelledby="contact-info-heading">
                 <h2 id="contact-info-heading"
                     className="text-lg font-medium text-gray-900">
-                Informations sur les contacts
+                  Informations sur les contacts
                 </h2>
               </section>
 
               <section aria-labelledby="payment-heading" className="mt-10">
-                <h2 id="payment-heading" className="text-lg font-medium text-gray-900">
+                <h2 id="payment-heading"
+                    className="text-lg font-medium text-gray-900">
                   Détails du paiement
                 </h2>
 
-                <div className="mt-6 grid grid-cols-3 gap-x-4 gap-y-6 sm:grid-cols-4">
+                <div
+                    className="mt-6 grid grid-cols-3 gap-x-4 gap-y-6 sm:grid-cols-4">
                   <div className="col-span-3 sm:col-span-4">
-                    <label htmlFor="name-on-card" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="name-on-card"
+                           className="block text-sm font-medium text-gray-700">
                       Nome sulla carta
                     </label>
                     <div className="mt-1">
@@ -206,7 +208,8 @@ export default function Payment() {
                   </div>
 
                   <div className="col-span-3 sm:col-span-4">
-                    <label htmlFor="card-number" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="card-number"
+                           className="block text-sm font-medium text-gray-700">
                       Numéro de carte
                     </label>
                     <div className="mt-1">
@@ -221,7 +224,8 @@ export default function Payment() {
                   </div>
 
                   <div className="col-span-2 sm:col-span-3">
-                    <label htmlFor="expiration-date" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="expiration-date"
+                           className="block text-sm font-medium text-gray-700">
                       Date d'expiration (MM/AA)
                     </label>
                     <div className="mt-1">
@@ -236,7 +240,8 @@ export default function Payment() {
                   </div>
 
                   <div>
-                    <label htmlFor="cvc" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="cvc"
+                           className="block text-sm font-medium text-gray-700">
                       CVC
                     </label>
                     <div className="mt-1">
@@ -253,15 +258,22 @@ export default function Payment() {
               </section>
 
               <section aria-labelledby="shipping-heading" className="mt-10">
-                <Listbox value={selectedShippingAdress} onChange={setSelectedShippingAdress}>
+                <Listbox value={selectedShippingAdress}
+                         onChange={setSelectedShippingAdress}>
                   {({ open }) => (
                       <>
-                        <Listbox.Label className="mt-5 block text-sm font-medium leading-6 text-gray-900">Adresse de facturation</Listbox.Label>
+                        <Listbox.Label
+                            className="mt-5 block text-sm font-medium leading-6 text-gray-900">Adresse
+                          de facturation</Listbox.Label>
                         <div className="relative mt-2">
-                          <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <span className="block truncate">{selectedShippingAdress}</span>
-                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                          <Listbox.Button
+                              className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <span
+                                className="block truncate">{selectedShippingAdress}</span>
+                            <span
+                                className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                <ChevronUpDownIcon className="h-5 w-5 text-gray-400"
+                                   aria-hidden="true"/>
               </span>
                           </Listbox.Button>
 
@@ -272,12 +284,15 @@ export default function Payment() {
                               leaveFrom="opacity-100"
                               leaveTo="opacity-0"
                           >
-                            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                            <Listbox.Options
+                                className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                               {formattedAddresses.map((person) => (
                                   <Listbox.Option
                                       className={({ active }) =>
                                           classNames(
-                                              active ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                                              active ?
+                                                  'bg-indigo-600 text-white' :
+                                                  'text-gray-900',
                                               'relative cursor-default select-none py-2 pl-3 pr-9'
                                           )
                                       }
@@ -285,18 +300,22 @@ export default function Payment() {
                                   >
                                     {({ selected, active }) => (
                                         <>
-                        <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                        <span className={classNames(
+                            selected ? 'font-semibold' : 'font-normal',
+                            'block truncate')}>
                           {person}
                         </span>
 
                                           {selected ? (
                                               <span
                                                   className={classNames(
-                                                      active ? 'text-white' : 'text-indigo-600',
+                                                      active ?
+                                                          'text-white' :
+                                                          'text-indigo-600',
                                                       'absolute inset-y-0 right-0 flex items-center pr-4'
                                                   )}
                                               >
-                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                            <CheckIcon className="h-5 w-5" aria-hidden="true"/>
                           </span>
                                           ) : null}
                                         </>
@@ -309,15 +328,22 @@ export default function Payment() {
                       </>
                   )}
                 </Listbox>
-                <Listbox value={selectedBilingAdress} onChange={setSelectedBilingAdress}>
+                <Listbox value={selectedBilingAdress}
+                         onChange={setSelectedBilingAdress}>
                   {({ open }) => (
                       <>
-                        <Listbox.Label className="mt-5 block text-sm font-medium leading-6 text-gray-900">Adresse de livraison</Listbox.Label>
+                        <Listbox.Label
+                            className="mt-5 block text-sm font-medium leading-6 text-gray-900">Adresse
+                          de livraison</Listbox.Label>
                         <div className="relative mt-2">
-                          <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <span className="block truncate">{selectedBilingAdress}</span>
-                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                          <Listbox.Button
+                              className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <span
+                                className="block truncate">{selectedBilingAdress}</span>
+                            <span
+                                className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                <ChevronUpDownIcon className="h-5 w-5 text-gray-400"
+                                   aria-hidden="true"/>
               </span>
                           </Listbox.Button>
 
@@ -328,13 +354,16 @@ export default function Payment() {
                               leaveFrom="opacity-100"
                               leaveTo="opacity-0"
                           >
-                            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                            <Listbox.Options
+                                className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                               {formattedAddresses.map((person) => (
                                   <Listbox.Option
                                       key={person.id}
                                       className={({ active }) =>
                                           classNames(
-                                              active ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                                              active ?
+                                                  'bg-indigo-600 text-white' :
+                                                  'text-gray-900',
                                               'relative cursor-default select-none py-2 pl-3 pr-9'
                                           )
                                       }
@@ -342,18 +371,22 @@ export default function Payment() {
                                   >
                                     {({ selected, active }) => (
                                         <>
-                        <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                        <span className={classNames(
+                            selected ? 'font-semibold' : 'font-normal',
+                            'block truncate')}>
                           {person}
                         </span>
 
                                           {selected ? (
                                               <span
                                                   className={classNames(
-                                                      active ? 'text-white' : 'text-indigo-600',
+                                                      active ?
+                                                          'text-white' :
+                                                          'text-indigo-600',
                                                       'absolute inset-y-0 right-0 flex items-center pr-4'
                                                   )}
                                               >
-                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                            <CheckIcon className="h-5 w-5" aria-hidden="true"/>
                           </span>
                                           ) : null}
                                         </>
@@ -367,19 +400,21 @@ export default function Payment() {
                   )}
                 </Listbox>
               </section>
-              <div className="mt-10 border-t border-gray-200 pt-6 sm:flex sm:items-center sm:justify-between">
-                <button
-                    onClick={CreateOrder}
-                    className="w-full rounded-md border border-transparent bg-gray-950 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:order-last sm:ml-6 sm:w-auto"
-                >
-                  Continuer
-                </button>
+              <div
+                  className="mt-10 border-t border-gray-200 pt-6 sm:flex sm:items-center sm:justify-between">
+
                 <p className="mt-4 text-center text-sm text-gray-500 sm:mt-0 sm:text-left">
                   Vous ne serez facturé qu’à l’étape suivante.
                 </p>
               </div>
             </div>
           </form>
+          <button
+              onClick={CreateOrder}
+              className="m-5 w-sm rounded-md border border-transparent bg-gray-950 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:order-last sm:ml-6 sm:w-auto"
+          >
+            Continuer
+          </button>
         </div>
       </div>
   )

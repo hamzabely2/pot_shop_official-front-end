@@ -18,7 +18,7 @@ const products = [
     address: ['Floyd Miles', '7363 Cynthia Pass', 'Toronto, ON N3Y 4H8'],
     email: 'f•••@example.com',
     phone: '1•••••••••40',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/confirmation-page-03-product-01.jpg',
+    imageSrc: '',
     imageAlt: 'Insulated bottle with white base and black snap lid.',
   },
   {
@@ -34,7 +34,7 @@ const products = [
     address: ['Floyd Miles', '7363 Cynthia Pass', 'Toronto, ON N3Y 4H8'],
     email: 'f•••@example.com',
     phone: '1•••••••••40',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/confirmation-page-03-product-02.jpg',
+    imageSrc: '',
     imageAlt:
         'Arm modeling wristwatch with black leather band, white watch face, thin watch hands, and fine time markings.',
   },
@@ -82,10 +82,6 @@ function OrderProfile(props) {
             <div className="space-y-2 px-4 sm:flex sm:items-baseline sm:justify-between sm:space-y-0 sm:px-0">
               <div className="flex sm:items-baseline sm:space-x-4">
                 <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Order #54879</h1>
-                <a href="#" className="hidden text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:block">
-                  View invoice
-                  <span aria-hidden="true"> &rarr;</span>
-                </a>
               </div>
               <p className="text-sm text-gray-600">
                 Order placed{' '}
@@ -160,19 +156,19 @@ function OrderProfile(props) {
                         <div className="mt-6" aria-hidden="true">
                           <div className="overflow-hidden rounded-full bg-gray-200">
                             <div
-                                className="h-2 rounded-full bg-indigo-600"
+                                className="h-2 rounded-full bg-gray-950"
                                 style={{ width: `calc((${product.step} * 2 + 1) / 8 * 100%)` }}
                             />
                           </div>
                           <div className="mt-6 hidden grid-cols-4 text-sm font-medium text-gray-600 sm:grid">
-                            <div className="text-indigo-600">Order placed</div>
-                            <div className={classNames(product.step > 0 ? 'text-indigo-600' : '', 'text-center')}>
+                            <div className="text-gray-950">Order placed</div>
+                            <div className={classNames(product.step > 0 ? 'text-gray-950' : '', 'text-center')}>
                               Processing
                             </div>
-                            <div className={classNames(product.step > 1 ? 'text-indigo-600' : '', 'text-center')}>
+                            <div className={classNames(product.step > 1 ? 'text-gray-950' : '', 'text-center')}>
                               Shipped
                             </div>
-                            <div className={classNames(product.step > 2 ? 'text-indigo-600' : '', 'text-right')}>
+                            <div className={classNames(product.step > 2 ? 'text-gray-950' : '', 'text-right')}>
                               Delivered
                             </div>
                           </div>
